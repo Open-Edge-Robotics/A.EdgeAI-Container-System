@@ -7,6 +7,9 @@
 ### - k8s : v1.28 
 ### - Microk8s or k3s
 
-
+## A.EdgeAI-Container-System Developement Main Contents
+### - Setup Developement Environment 
+### - Effective AI Service for A.EdgeAI 
+### - Effective Scheduler for A.EdgeAI 
 
 
