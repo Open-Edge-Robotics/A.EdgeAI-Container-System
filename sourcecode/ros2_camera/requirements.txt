@@ -1,0 +1,7 @@
+Flask==3.0.3
+numpy==1.26.4
+opencv-python
+pandas==2.0.3
+ultralytics==8.2.19
+supervision==0.20.0
+torch==2.3.0
