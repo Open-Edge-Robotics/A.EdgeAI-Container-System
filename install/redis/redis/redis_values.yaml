@@ -1,0 +1,26 @@
+global:
+  redis:
+    password: gr1324
+
+replica:
+  replicaCount: 2
+
+persistence:
+  enabled: true
+  size: 8Gi
+
+master:
+  service:
+    type: NodePort
+    nodePorts:
+      redis: 30079
+  persistence:
+    enabled: true
+    size: 8Gi
+
+replica:
+  service:
+    type: ClusterIP
+  persistence:
+    enabled: true
+    size: 8Gi
