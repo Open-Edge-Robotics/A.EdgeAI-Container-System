@@ -1,0 +1,4 @@
+kafka-python
+kubernetes
+redis
+pymongo
