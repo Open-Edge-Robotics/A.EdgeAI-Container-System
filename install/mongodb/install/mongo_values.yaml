@@ -1,0 +1,15 @@
+architecture: standalone
+useStatefulSet: true
+
+service:
+  type: NodePort
+
+auth:
+  enabled: false
+  
+#auth:
+#  enabled: true
+#  rootPassword: gm1324
+#  database: gmdatabase
+#  username: admin
+#  password: gm1324
