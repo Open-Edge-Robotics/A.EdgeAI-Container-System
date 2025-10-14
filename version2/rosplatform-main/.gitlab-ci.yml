@@ -1,0 +1,147 @@
+stages:
+  - prepare
+  - build
+  - deploy
+  - test
+
+
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  
+variables:
+  SCAN_KUBERNETES_MANIFESTS: "true"
+
+webserver:prepare:
+  stage: prepare
+  script:
+    - echo "$GIT_USER:$GIT_TOKEN"
+    - export
+  tags:
+    - main
+
+
+.ptyhonbase_extends:
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      changes:
+        paths:
+        - docker/Dockerfile_pythonbase
+  tags:
+    - main
+
+ptyhonbase:build:
+  image: docker
+  stage: build
+  services:
+    - docker:dind
+  variables:
+    DOCKER_IMAGE : docker.zento.co.kr/edge/pythonbase:0.1
+    DOCKER_IMAGE_LATEST : docker.zento.co.kr/edge/pythonbase:latest
+    GIT_URL: https://$GIT_USER:$GIT_TOKEN@git.etri.dev/edge/rosplatform.git
+  extends: .ptyhonbase_extends
+  before_script:
+    - git clone "$GIT_URL"
+    - docker info
+    - ps aux
+    - whoami
+    - uname -a
+    - docker images
+    - docker ps -a
+    - mkdir -p /etc/docker
+    - echo "{\"insecure-registries\":[\"$HARBOR_URL\"]}" > /etc/docker/daemon.json
+    - docker login -u "$HARBOR_USERNAME" -p "$HARBOR_PASSWORD" $HARBOR_URL
+  script:
+    - docker build --pull -f docker/Dockerfile_pythonbase -t "$DOCKER_IMAGE" .
+    - docker push "$DOCKER_IMAGE"
+    - docker tag "$DOCKER_IMAGE" "$DOCKER_IMAGE_LATEST"
+    - docker push "$DOCKER_IMAGE_LATEST"
+      
+
+.webserver_extends2:
+  rules:
+    - if: $CI_COMMIT_BRANCH
+      changes:
+        paths:
+        - app/*
+        - app/**/*
+        - static/*
+        - static/**/*
+        - templates/*
+        - templates/**/*
+        - docker/Dockerfile_webserver
+  tags:
+    - main
+
+.webserver_extends:
+  tags:
+    - main
+
+webserver:build:
+  image: docker
+  stage: build
+  services:
+    - docker:dind
+  variables:
+    DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    GIT_URL: https://$GIT_USER:$GIT_TOKEN@git.etri.dev/edge/rosplatform.git
+  extends: .webserver_extends
+  before_script:
+    - git clone "$GIT_URL"
+    - docker info
+    - ps aux
+    - whoami
+    - uname -a
+    - docker images
+    - docker ps -a
+    - mkdir -p /etc/docker
+    - echo "{\"insecure-registries\":[\"$HARBOR_URL\"]}" > /etc/docker/daemon.json
+    - docker login -u "$HARBOR_USERNAME" -p "$HARBOR_PASSWORD" $HARBOR_URL
+  script:
+    - echo "DOCKER_IMAGE_NAME - $DOCKER_IMAGE_NAME"
+    - echo "CI_REGISTRY_IMAGE - $CI_COMMIT_BRANCH"
+    - echo "CI_DEFAULT_BRANCH - $CI_DEFAULT_BRANCH"
+    - docker build --pull -f docker/Dockerfile_webserver -t "$DOCKER_IMAGE_NAME" .
+    - docker push "$DOCKER_IMAGE_NAME"
+    - |
+      if [[ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]]; then
+        docker tag "$DOCKER_IMAGE_NAME" "$CI_REGISTRY_IMAGE:latest"
+        docker push "$CI_REGISTRY_IMAGE:latest"
+      fi
+  
+
+webserver:deploy:
+  stage: deploy
+  image: docker.zento.co.kr/edge/edgecicd:latest
+  variables:
+    GIT_URL: https://$GIT_USER:$GIT_TOKEN@git.etri.dev/edge/rosplatform.git
+  before_script:
+    - echo "run before script."
+    - echo "GIT_URL - $GIT_URL"
+  extends: .webserver_extends
+  script:
+    - export    
+    - echo "Deploying to Kubernetes...."
+    - echo "Deploy complete."
+    - git clone "$GIT_URL"
+    - kubectl delete pod -l app=webserver -n gedge
+    - kubectl delete svc -l app=webserver -n gedge
+    - kubectl apply -f rosplatform/yaml/webserver.yaml
+    - kubectl delete pod -l app=nginx -n gedge
+    - kubectl delete svc -l app=nginx -n gedge
+    - kubectl apply -f rosplatform/yaml/nginx.yaml
+
+
+webserver:test:
+  stage: test
+  image: docker.zento.co.kr/edge/edgecicd:latest
+  variables:
+    GIT_URL: https://$GIT_USER:$GIT_TOKEN@git.etri.dev/edge/rosplatform.git
+  before_script:
+    - echo "run before script."
+    - echo "GIT_URL - $GIT_URL"
+  extends: .webserver_extends
+  script:
+    - echo "run test script."
+    - curl -X GET http://webserver.gedge:8000/

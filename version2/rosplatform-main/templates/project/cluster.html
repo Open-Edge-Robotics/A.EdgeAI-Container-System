@@ -1,0 +1,112 @@
+<div class="cluster-container">
+    <div class="cluster-info-top" style="background-image: url(static/images/bg-t-r.png); background-position: right top; background-repeat: no-repeat;">
+        <div class="cluster-header">
+            <img src="static/images/cluster-m.png" width="40px" height="40px" alt="cluster_info" class="cluster-header-icon"> <span class="cluster-header-title">Cluster</span>
+        </div>
+        
+        <div style="background: var(--box-inner-color2); width: auto; height: calc(100% - 70px); margin: 10px; padding: 10px;">
+            <div class="cluster-detail-sidebar">
+                Cluster List
+            </div>
+            <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                <div style="width: 400px; height: 40px; background: var(--box-inner-color); 
+                    display: flex;  flex-direction: row; align-items: center; padding-left: 10px;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;padding-right: 10px;"> 
+                        <i class="fas fa-search" style="margin-right: 5px;"></i><span>Search</span> 
+                    </div>
+                    <input type="text" id="filter-text-box" placeholder="Search..." oninput="onFilterTextBoxChanged()" 
+                    style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"/>
+                </div>
+                
+            </div>
+            <div id="cluster-chart" style="height: calc(100% - 80px); width: auto;">
+
+            </div>
+        </div>
+        
+    </div>
+</div>
+<script>
+
+    var update_clusters_info = null;
+    var onFilterTextBoxChanged = null;
+    var onClusterNameChanged = null;
+    
+
+    function ClusterDetail() {
+
+    
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", width: 140, flex: 1},
+                { field: "type", headerName: "Type", width: 100, cellStyle: {textAlign: "center"}, cellRenderer: ClusterTypeRenderer },
+                { field: "ip", headerName: "IP", width: 120, cellStyle: {textAlign: "center"} },
+                { field: "nodes", headerName: "Nodes", width: 120, cellStyle: {textAlign: "center"} },
+                { field: "pods", headerName: "Pods", width: 120,cellStyle: {textAlign: "center"} },
+                { field: "services", headerName: "Services", width: 120,cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#cluster-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function _onFilterTextBoxChanged() {
+            gridApi.setGridOption(
+                "quickFilterText",
+                document.getElementById("filter-text-box").value,
+            );
+        }
+
+        update_clusters_info = function(clusters_info) {
+
+            gridApi.setGridOption("rowData", []);
+
+            clusters_info.forEach(cluster => {
+
+                var name = cluster.cluster_name;
+                var type = cluster.cluster_type;
+                var ip = cluster.cluster_ip;
+                var nodes = cluster.nodes.length;
+                var pods = cluster.pods.length;
+                var services = cluster.services.length;
+                
+                cluster.nodes.forEach(node => {
+                    if(checkProperty(node.metadata.labels, 'node-role.kubernetes.io/control-plane')) {
+                        ip = node.status.addresses[0].address;
+                        return;
+                    }
+                });
+
+                gridApi.applyTransaction({
+                    add: [{name: name, type: type, ip: ip, nodes: nodes, pods: pods, services: services, cluster: cluster}]
+                });
+            });
+
+          
+        }
+
+    
+        onFilterTextBoxChanged = _onFilterTextBoxChanged;
+    }
+
+   
+
+    ClusterDetail();
+
+</script>
+
+<script>
+
+
+
+get_clusters_info();
+
+
+</script>

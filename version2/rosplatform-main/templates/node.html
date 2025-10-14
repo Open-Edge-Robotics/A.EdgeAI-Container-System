@@ -1,0 +1,242 @@
+<div class="cluster-container">
+    <div class="cluster-info-top" style="background-image: url(static/images/bg-t-r.png); background-position: right top; background-repeat: no-repeat;">
+        <div class="cluster-header">
+            <img src="static/images/node-title.png" width="40px" height="40px" alt="cluster_info" class="cluster-header-icon"> <span class="cluster-header-title">Node</span>
+        </div>
+        
+        <div style="background: var(--box-inner-color2); width: auto; height: calc(100% - 70px); margin: 10px; padding: 10px;">
+            <div class="cluster-detail-sidebar">
+                Node List
+            </div>
+            <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                <div style="width: 300px; height: 40px; background: var(--box-inner-color); 
+                    display: flex;  flex-direction: row; align-items: center;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;"> 
+                        <img src="static/images/s_cluster_icon2.png" alt="node"><span>Cluster</span> 
+                    </div>
+                        
+                    <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                    padding-left: 10px;">
+                        <select name="cluster_names" id="cluster_names" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"
+                          onchange="onClusterNameChanged()" aria-label="Select cluster">
+                            <option value="*">All</option>
+                            <option value="edge">edge</option>
+                            <option value="zento">zento</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="width: 400px; height: 40px; background: var(--box-inner-color); 
+                    display: flex;  flex-direction: row; align-items: center; padding-left: 10px;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;padding-right: 10px;"> 
+                        <i class="fas fa-search" style="margin-right: 5px;"></i><span>Search</span> 
+                    </div>
+                    <input type="text" id="filter-text-box" placeholder="Search..." oninput="onFilterTextBoxChanged()" 
+                    style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"/>
+                </div>
+                
+            </div>
+            <div id="node-chart" style="height: calc(100% - 80px); width: auto;">
+
+            </div>
+        </div>
+        
+    </div>
+</div>
+<script>
+
+    var onFilterTextBoxChanged = null;
+    var onClusterNameChanged = null;
+    var update_clusters_info = null;
+    
+
+    function ClusterDetail() {
+
+        let cluster_name = "*";
+        
+        function doesExternalFilterPass(node) {
+
+            if (cluster_name === "*") {
+                return true;
+            }else if (node.data.cluster === cluster_name) {
+
+                return true;
+            }
+
+            return false;
+        }
+
+    
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+               
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", width: 140, pinned: "left"},
+                { field: "type", headerName: "Type", width: 100, cellStyle: {textAlign: "center"} },
+                { field: "version", headerName: "Version", width: 100 },
+                { field: "ip", headerName: "IP", width: 130, cellStyle: {textAlign: "center"} },
+                { field: "os", headerName: "OS", width: 150, cellStyle: {textAlign: "center"} },
+                { field: "cpu", headerName: "CPU", cellRenderer: UsageRenderer, flex: 1, minWidth: 120 },
+                { field: "gpu", headerName: "GPU", cellRenderer: UsageRenderer, flex: 1, minWidth: 120 },
+                { field: "ram", headerName: "RAM", cellRenderer: UsageRenderer, flex: 1, minWidth: 120 },
+                { field: "pods", headerName: "Pods", width: 100, cellStyle: {textAlign: "center"} },
+                { field: "cluster", headerName: "Cluster", cellStyle: {textAlign: "center"} },
+                { field: "status", headerName: "Status", cellRenderer: StatusRenderer, width: 100 },
+                { field: "date", headerName: "Date", width: 170, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true,
+            isExternalFilterPresent: isExternalFilterPresent,
+            doesExternalFilterPass: doesExternalFilterPass
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#node-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function isExternalFilterPresent() {
+            return cluster_name !== "*";
+          
+        }
+
+        function _onFilterTextBoxChanged() {
+            gridApi.setGridOption(
+                "quickFilterText",
+                document.getElementById("filter-text-box").value,
+            );
+        }
+
+        function _onClusterNameChanged() {
+            cluster_name = document.getElementById("cluster_names").value;
+            gridApi.onFilterChanged();
+        }
+
+
+
+        function _update_clusters_info(clusters_info) {
+
+            $("#cluster_names").empty();
+            $("#cluster_names").append("<option value='*'>All</option>");
+
+            gridApi.setGridOption("rowData", []);
+            
+            clusters_info.forEach(cluster => {
+
+                const cluster_name = cluster.cluster_name;
+
+                $("#cluster_names").append("<option value='"+cluster_name+"'>"+cluster_name+"</option>");
+
+
+                cluster.nodes.forEach(node => {
+
+                    const name = node.metadata.name;
+
+                    //console.log(node);
+
+                    var type;
+                    if("node-role.kubernetes.io/control-plane" in node.metadata.labels) {
+                        type = "Master";
+                    }else{
+                        type = "Slave";
+                    }
+
+
+
+                    const version = node.status.nodeInfo.kubeletVersion;
+                    const ip = node.status.addresses[0].address;
+                    const os = node.status.nodeInfo.osImage;
+                    const pods = cluster.pods.length;
+
+                    const status = node.status.conditions[node.status.conditions.length - 1].type;
+
+                    const create_timestamp = convertUTCToSeoul(node.metadata.creationTimestamp);
+
+                    let a_cpu = 0.0;
+                    let a_gpu = 1.0;
+                    let a_ram = 0.0;
+
+                    let u_cpu = 0.0;
+                    let u_gpu = 0.0;
+                    let u_ram = 0.0;
+
+
+                    if (checkProperty(node, 'allocatable')) {
+
+                        if (checkProperty(node.allocatable, 'cpu')) {
+                            a_cpu = node.allocatable.cpu;
+                        }
+
+                        if (checkProperty(node.allocatable, 'nvidia.com/gpu')) {
+                            a_gpu = node.allocatable['nvidia.com/gpu'];
+                        }
+
+                        if (checkProperty(node.allocatable, 'memory')) {
+                            a_ram = node.allocatable.memory;
+                        }
+
+                        
+                    }
+
+
+                    if (checkProperty(node, 'requests')) {
+
+                        if (checkProperty(node.requests, 'cpu')) {
+                            u_cpu = node.requests.cpu;
+                        }
+
+                        if (checkProperty(node.requests, 'nvidia.com/gpu')) {
+                            u_gpu = node.requests['nvidia.com/gpu'];
+                        }
+
+                        if (checkProperty(node.requests, 'memory')) {
+                            u_ram = node.requests.memory;
+                        }
+
+                        
+                    }
+
+                    let cpu = 100.0 * u_cpu/a_cpu;
+                    let gpu = 100.0 * u_gpu/a_gpu;
+                    let ram = 100.0 * u_ram/a_ram;
+
+                    cpu = Math.random() * 100;
+                    gpu = Math.random() * 100;
+                    ram = Math.random() * 100;
+
+                    const newItems = [{ name: name, type: type, version: version, ip: ip, os: os, cpu: cpu, gpu: gpu, ram: ram, pods: pods, cluster: cluster_name, status: status, date: create_timestamp }];
+                    const res = gridApi.applyTransaction({
+                        add: newItems
+                    });
+
+                });
+                
+            }); 
+        }
+
+
+
+        onFilterTextBoxChanged = _onFilterTextBoxChanged;
+        onClusterNameChanged = _onClusterNameChanged;
+
+        update_clusters_info = _update_clusters_info;
+
+    }
+
+   
+
+    ClusterDetail();
+
+</script>
+
+
+
+<script>
+
+get_clusters_info();
+
+
+
+
+</script>

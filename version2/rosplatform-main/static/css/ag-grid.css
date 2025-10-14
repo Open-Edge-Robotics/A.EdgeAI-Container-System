@@ -1,0 +1,150 @@
+:root{
+    --ag-header-background-color: #0F0F0F;
+    --ag-header-text-color: #585858;
+    --ag-foreground-color: #FFFFFF;
+    --ag-background-color: #151515;
+    --ag-header-font-family: Paperlogy;
+    --ag-column-hover-color: #ffffff;
+    --ag-accent-color: #ffffff;
+    --ag-font-family: Paperlogy;
+    --ag-font-size: 12px;
+
+}
+
+.ag-row-hover2{
+    background-color:#4e4e4e;
+}
+
+progress {
+    appearance: none;
+    height: 4px;
+    width: 100%;
+}
+progress::-webkit-progress-bar {
+    background:#f0f0f0;
+    border-radius:10px;
+    box-shadow: inset 3px 3px 10px #ccc;
+}
+progress::-webkit-progress-value {
+    border-radius:10px;
+    background: #00B050;
+}
+
+progress::-moz-progress-bar {
+    background:#f0f0f0;
+    border-radius:10px;
+    box-shadow: inset 3px 3px 10px #ccc;
+}
+progress::-moz-progress-value {
+    border-radius:10px;
+    background: #00B050;
+}
+
+progress.usage-progress-warning::-webkit-progress-value{
+    background: #FF8630;
+}
+
+progress.usage-progress-danger::-webkit-progress-value{
+    background: #ff0000;
+}
+
+progress.usage-progress-warning::-moz-progress-value{
+    background: #FF8630;
+}
+
+progress.usage-progress-danger::-moz-progress-value{
+    background: #ff0000;
+}
+
+
+
+.ag-header-cell-label {
+    justify-content: center;
+  }
+
+
+.usage-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+}
+.usage-span{
+    margin: 0;
+    padding: 0;
+    line-height: 24px;
+}
+
+
+.status-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+.status-in-div
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 15px;
+    background: #FF8630;
+    height: 26px;
+    width: 80px;
+}
+
+.status-span{
+    color: #000;
+    font-family: Paperlogy;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    text-transform: uppercase;
+}
+
+
+.user-in-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 10px;
+    background: #000;
+    height: 20px;
+    width: 80px;
+}
+
+
+.user-span{
+    color: #fff;
+    font-family: Paperlogy;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-transform: uppercase;
+}
+
+
+.host-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+.host-span{
+    color: #fff;
+    font-family: Paperlogy;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-transform: uppercase;
+}

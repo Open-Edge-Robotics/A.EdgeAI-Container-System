@@ -1,0 +1,25 @@
+# runner-values.yaml
+gitlabUrl: "https://git.etri.dev"
+runnerToken: "glrt-t3_iKWmiadj5c1ucYQ5QDs1"
+rbac:
+  create: true
+  resources: ["pods", "pods/exec", "secrets", "events"]
+  verbs: ["get", "list", "watch", "create", "patch", "delete"]
+serviceAccount:
+  create: false
+  name: zento
+runners:
+  config: |
+    [[runners]]
+      [runners.kubernetes]
+        image = "docker.zento.co.kr/edge/edgecicd:latest"
+        allow_privilege_escalation = true
+        cap_add = ["NET_ADMIN"]
+        image_pull_secrets = ["harborreg", "robot3"]
+        [runners.kubernetes.pod_security_context]
+          run_as_non_root = false
+          run_as_user = 0
+        [[runners.kubernetes.volumes.host_path]]
+          name = "hostpath-1"
+          mount_path = "/var/run/docker.sock"
+          host_path = "/var/run/docker.sock"

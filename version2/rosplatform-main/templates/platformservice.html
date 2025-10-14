@@ -1,0 +1,151 @@
+<div class="cluster-container">
+    <div class="cluster-info-top" style="background-image: url(static/images/bg-t-r.png); background-position: right top; background-repeat: no-repeat;">
+        <div class="cluster-header">
+            <img src="static/images/platformservice-m.png" width="40px" height="40px" alt="cluster_info" class="cluster-header-icon"> <span class="cluster-header-title">Platform Service</span>
+        </div>
+        
+        <div style="background: var(--box-inner-color2); width: auto; height: calc(100% - 70px); margin: 10px; padding: 10px;">
+            <div class="cluster-detail-sidebar">
+                PLatform Service List
+            </div>
+            <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                <!-- div style="border-radius: 3px; background: #00B050; width: 90px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px;">
+                    <i class="fas fa-plus" style="margin-right: 5px;"></i> <span style="color: #fff; font-size: 14px; font-weight: 600;">Create</span>
+                </div>
+                <div style="border-radius: 3px; background: #0F0F0F; width: 90px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px;">
+                    <i class="fas fa-pencil" style="margin-right: 5px;"></i> <span style="color: #fff; font-size: 14px; font-weight: 600;">Modify</span>
+                </div>
+                <div style="border-radius: 3px; background: #D30F0F;; width: 90px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px;">
+                    <i class="fas fa-trash" style="margin-right: 5px;"></i> <span style="color: #fff; font-size: 14px; font-weight: 600;">Delete</span>
+                </div -->
+                <div style="width: 400px; height: 40px; background: var(--box-inner-color); 
+                    display: flex;  flex-direction: row; align-items: center; padding-left: 10px;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;padding-right: 10px;"> 
+                        <i class="fas fa-search" style="margin-right: 5px;"></i><span>Search</span> 
+                    </div>
+                    <input type="text" id="filter-text-box" placeholder="Search..." oninput="onFilterTextBoxChanged()" 
+                    style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"/>
+                </div>
+                
+            </div>
+            <div id="pod-chart" style="height: calc(100% - 80px); width: auto;">
+
+            </div>
+        </div>
+        
+    </div>
+</div>
+<script>
+
+    var onFilterTextBoxChanged = null;
+    var onClusterNameChanged = null;
+    
+
+    function ClusterDetail() {
+
+    
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+    
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", minWidth: 200,  flex: 1},
+                { field: "namespace", headerName: "Namespace",minWidth: 100, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "cluster", headerName: "Cluster",minWidth: 100, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "type", headerName: "Service", width: 150, cellStyle: {textAlign: "center"} },
+                { field: "externalip", headerName: "External IP", width: 150, cellStyle: {textAlign: "center"} },
+                { field: "clusterip", headerName: "Cluster IP", width: 130, cellStyle: {textAlign: "center"} },
+                { field: "port", headerName: "Port", width: 130 , cellStyle: {textAlign: "center"}},
+                { field: "date", headerName: "Date", width: 170, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#pod-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function _onFilterTextBoxChanged() {
+            gridApi.setGridOption(
+                "quickFilterText",
+                document.getElementById("filter-text-box").value,
+            );
+        }
+
+        function _update_clusters_info(clusters_info) {
+
+            gridApi.setGridOption("rowData", []);
+
+            clusters_info.forEach(cluster => {
+
+                const cluster_name = cluster.cluster_name;
+                var external_ip = null;
+                cluster.nodes.forEach(node => {
+
+                    if(checkProperty(node.metadata.labels, 'node-role.kubernetes.io/control-plane')) {
+                        external_ip = node.status.addresses[0].address;
+                        return;
+                    }
+
+                });
+
+
+                cluster.services.forEach(service => {
+
+                    if(service.metadata.namespace == "gedge" || service.metadata.namespace == "gedge-system-scheduler") {
+                       
+                        const create_timestamp = convertUTCToSeoul(service.metadata.creationTimestamp);
+                        const name = service.metadata.name;
+                        const namespace = service.metadata.namespace;
+
+        
+                        const type = service.spec.type;
+                        var clusterip = service.spec.clusterIP;
+                        var port = service.spec.ports[0].port + "/" + service.spec.ports[0].nodePort;
+                        var externalip = "";
+
+                        if(checkProperty(service.spec.ports[0], "nodePort")) {
+                            port = service.spec.ports[0].port + "/" + service.spec.ports[0].nodePort;
+                        }else{
+                            port = service.spec.ports[0].port;
+                        }
+                       
+
+                        if(type == "LoadBalancer") {
+                            externalip = service.status.loadBalancer.ingress[0].ip;
+                        }else if(type == "NodePort") {
+                            externalip = external_ip;
+                        }
+
+                        const newItems = [{ name: name, namespace: namespace, cluster: cluster_name, type: type, clusterip: clusterip, externalip: externalip, port: port, date: create_timestamp }];
+
+                        const res = gridApi.applyTransaction({
+                            add: newItems
+                        });
+                    }
+
+                });
+
+            });
+
+           
+        }
+
+        onFilterTextBoxChanged = _onFilterTextBoxChanged;
+        update_clusters_info = _update_clusters_info;
+    }
+
+   
+
+    ClusterDetail();
+
+</script>
+
+<script>
+
+    get_clusters_info();
+        
+</script>

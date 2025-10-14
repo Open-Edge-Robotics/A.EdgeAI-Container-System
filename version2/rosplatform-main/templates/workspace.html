@@ -1,0 +1,451 @@
+<div class="cluster-container">
+    <div class="cluster-info-top" style="background-image: url(static/images/bg-t-r.png); background-position: right top; background-repeat: no-repeat;">
+        <div class="cluster-header">
+            <img src="static/images/workspace-m.png" width="40px" height="40px" alt="cluster_info" class="cluster-header-icon"> <span class="cluster-header-title">Workspace</span>
+        </div>
+        
+
+        
+        <div style="background: var(--box-inner-color2); min-height: 250px; width: auto; height: calc(100% - 470px); margin: 10px; padding: 10px;">
+            <div class="cluster-detail-sidebar" style="margin-bottom: 10px;">
+                Workspace List
+            </div>
+
+            <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                <div style="border-radius: 3px; background: #00B050; width: 90px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px; cursor: pointer;" onclick="show_insert_workspace()">
+                    <i class="fas fa-plus" style="margin-right: 5px;"></i> <span style="color: #fff; font-size: 14px; font-weight: 600;">Create</span>
+                </div>
+                <div style="border-radius: 3px; background: #00B050; width: 90px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px; cursor: pointer;" onclick="show_modify_workspace()">
+                    <i class="fas fa-pencil" style="margin-right: 5px;"></i> <span style="color: #fff; font-size: 14px; font-weight: 600;">Modify</span>
+                </div>
+                <div style="border-radius: 3px; background: #D30F0F;; width: 90px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px; cursor: pointer;" onclick="onDelete_Workspace()">
+                    <i class="fas fa-trash" style="margin-right: 5px;"></i> <span style="color: #fff; font-size: 14px; font-weight: 600;">Delete</span>
+                </div>
+                <div style="width: 400px; height: 40px; background: var(--box-inner-color); 
+                    display: flex;  flex-direction: row; align-items: center; padding-left: 10px;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;padding-right: 10px;"> 
+                        <i class="fas fa-search" style="margin-right: 5px;"></i><span>Search</span> 
+                    </div>
+                    <input type="text" id="filter-text-box" placeholder="Search..." oninput="onFilterTextBoxChanged()" 
+                    style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"/>
+                </div>
+                
+            </div>
+            <div id="workspace-chart" style="height: calc(100% - 30px); width: auto; min-height: 250px;">
+
+            </div>
+        </div>
+
+        <div style="background: var(--box-inner-color2); width: auto; height: 400px; margin: 10px; padding: 10px;">
+            <div class="cluster-detail-sidebar" style="margin-bottom: 10px;">
+                Deftail Info - Project List
+            </div>
+            <div id="project-chart" style="height: calc(100% - 30px); width: auto;">
+
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="out_panel" id="workspace-insert-panel" style="display: none;">
+    <div style="width: 100%; height: 100%; display: flex; flex-direction: row; align-items: center; justify-content: center;
+       min-height: 600px;">
+        <div style="padding: 20px; width: 500px;height: auto;border-radius: 5px; background: #151515; box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.25); ">
+            <div style="margin-top: 20px;width: 100%; justify-content: center;display: flex; flex-direction: row; align-items: center;"><img src="static/images/logo2.png" alt="logo" style="width: 150px; "></div>
+            <div style="padding-left: 20px;margin-top: 20px;width: 100%; justify-content: center;display: flex; flex-direction: row; align-items: center;height: 40px;">
+               <span style="color: #00B050; font-size: 16px;">Add Workspace</span>
+            </div>
+            <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; width: 100%;">
+                <div class="insert-title">Workspace: </div>
+                <div class="insert-input-box"> 
+                    <input id="workspace" type="text" style="outline: none; padding: 5px; width: 100%; background: transparent; border: 0; color: #fff; font-size: 14px;" placeholder="Please enter your Workspace">
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; width: 100%;text-align: center; padding-top: 10px;">
+                <div class="insert-title" style="text-align: center;">Clusters</div>
+            </div>
+            <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; width: 100%;
+            padding: 10px;">
+                <div style="width: 100%;">
+                    <select id="unselected-cluster" style="outline: none; background:#1C1C1C;outline: 0;border: 0;color: #fff;width: 100%;" multiple>
+                    </select>
+                </div>
+                <div style="width: 50px;display: flex; flex-direction: column; align-items: center; justify-content: center;padding-left: 10px;padding-right: 10px;">
+                    <i class="fas fa-arrow-right" style="color: #fff;font-size: 16px;cursor: pointer;" onclick="onArrowRightClicked()"></i>
+                    <i class="fas fa-arrow-left" style="color: #fff;font-size: 16px;cursor: pointer;" onclick="onArrowLeftClicked()"></i>
+                </div>
+                <div style="width: 100%;">
+                    <select id="selected-cluster" style="outline: none; background:#1C1C1C;outline: 0;border: 0;color: #fff;width: 100%;" multiple>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: row; align-items: center; justify-content: center; width: 100%; margin-top: 20px;">
+                <div id="ok-button" style="cursor: pointer; width: 100%; justify-content: center;display: flex; flex-direction: row; align-items: center; background: #00B050; height: 40px;border-radius: 5px;" onclick="onOkButtonClicked()">
+                    Ok
+                </div>
+                <div style="cursor: pointer; width: 100%; justify-content: center;display: flex; flex-direction: row; align-items: center; background: #1C1C1C; height: 40px;border-radius: 5px;" onclick="hide_insert_workspace()">
+                    Close
+                </div>
+            </div>
+
+            
+        </div>
+    </div>
+</div>
+<script>
+
+
+    var onFilterTextBoxChanged = null;
+    var onWorkspaceListChanged = null;
+    var onProjectListChanged = null;
+    var show_modify_workspace = null;
+    var onDelete_Workspace = null;
+
+    function WorkspaceDetail() {
+
+    
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", width: 150, pinned: "left"},
+                { field: "username", headerName: "User", width: 100, cellStyle: {textAlign: "center"}},
+                { field: "clusters", headerName: "Clusters", minWidth: 200, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "date", headerName: "Date", width: 170, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true,
+            onRowClicked: function(event) {
+                select_workspace(event.data);
+            },
+            rowSelection: {
+                mode: 'singleRow',
+                checkboxes: false,
+                headerCheckbox: false,
+                enableClickSelection: true,
+            }
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#workspace-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function _onFilterTextBoxChanged() {
+            gridApi.setGridOption(
+                "quickFilterText",
+                document.getElementById("filter-text-box").value,
+            );
+        }
+
+        function _onWorkspaceListChanged(workspaces) {
+
+            gridApi.setGridOption("rowData", []);
+
+            var _workspaces = [];
+
+            workspaces.forEach(workspace => {
+                const id = workspace.id;
+                const name = workspace.name;
+                const username = workspace.username;
+                const clusters = workspace.clusters.join(", ");
+                const date = convertUTCToSeoul(workspace.updated_at);
+
+                _workspaces.push({id: id, name: name, username: username, clusters: clusters, date: date});
+            });
+
+            gridApi.setGridOption("rowData", _workspaces);
+
+            
+        }
+
+        function select_workspace(workspace) {
+            
+            zfetch("/projects/?workspace_id=" + workspace.id, "GET", null).then(data => {
+                onProjectListChanged(data);
+            });
+
+           
+        }
+
+        function _show_modify_workspace() {
+            var selected_rows = gridApi.getSelectedRows();
+
+            if(selected_rows.length == 0) {
+                alert("Please select a workspace.");
+                return;
+            }
+
+
+
+            var workspace = selected_rows[0];
+
+            $("#workspace").val(workspace.name);
+            $("#workspace").attr("readonly", true);
+
+            $("#unselected-cluster").empty();
+            $("#selected-cluster").empty();
+
+
+            const clusters = workspace.clusters.split(",");
+
+            clusters.forEach(cluster => {
+                $("#selected-cluster").append("<option value='" + cluster + "'>" + cluster + "</option>");
+            });
+
+            cluster_names.forEach(cluster => {
+                if(!clusters.includes(cluster)) {
+                    $("#unselected-cluster").append("<option value='" + cluster + "'>" + cluster + "</option>");
+                }
+            });
+
+            document.getElementById("workspace-insert-panel").style.display = "block";
+
+            $("#ok-button").text("Modify");
+            $("#ok-button").attr("onclick", "onModifyButtonClicked()");
+
+        }
+
+        function _onDelete_Workspace() {
+            var selected_rows = gridApi.getSelectedRows();
+            if(selected_rows.length == 0) {
+                alert("Please select a workspace.");
+                return;
+            }
+
+            var workspace = selected_rows[0];
+
+            zfetch("/workspaces/" + workspace.id, "DELETE", null).then(data => {
+                get_workspace_list();
+            });
+        }
+
+
+        onFilterTextBoxChanged = _onFilterTextBoxChanged;
+        onWorkspaceListChanged = _onWorkspaceListChanged;
+        show_modify_workspace = _show_modify_workspace;
+        onDelete_Workspace = _onDelete_Workspace;
+
+    }
+
+
+    function ProjectDetail() {
+
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+                
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", width: 150, pinned: "left"},
+                { field: "user", headerName: "User", width: 100, cellStyle: {textAlign: "center"}},
+                { field: "clusters", headerName: "Clusters", minWidth: 200, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "date", headerName: "Date", width: 170, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#project-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function _onProjectListChanged(projects) {
+            gridApi.setGridOption("rowData", []);
+
+            var _projects = [];
+
+            projects.forEach(project => {
+                const name = project.name;
+                const user = project.username;
+                const clusters = project.clusters.join(", ");
+                const date = convertUTCToSeoul(project.updated_at);
+
+                const newItems = [{name: name, user: user, clusters: clusters, date: date}];
+                gridApi.applyTransaction({add: newItems});
+            });
+
+
+        }
+
+        
+
+        onProjectListChanged = _onProjectListChanged;
+        
+    }
+
+
+    WorkspaceDetail();
+    ProjectDetail();
+
+</script>
+
+<script>
+
+    function get_workspace_list() {
+
+        var token = localStorage.getItem("access_token");
+        var token_type = localStorage.getItem("token_type");
+
+        const url = "/workspaces/";
+        fetch(url,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": token_type+" " + token
+                }
+            })
+        .then(response => response.json())
+        .then(data =>{
+            onWorkspaceListChanged(data);
+        }).catch((error) => {
+            console.log(error);
+            clear_local_storage();
+        });
+    }
+
+
+    get_workspace_list();
+
+
+</script>
+
+<script>
+
+
+var cluster_names = [];
+
+function _update_clusters_info(cluster_info) {
+
+    cluster_names = [];
+    cluster_info.forEach(cluster => {
+        cluster_names.push(cluster.cluster_name);
+    });
+}
+
+function show_insert_workspace() {
+
+
+    $("#workspace").val("");
+
+    $("#workspace").attr("readonly", false);
+
+    $("#unselected-cluster").empty();
+    $("#selected-cluster").empty();
+
+    cluster_names.forEach(cluster => {
+        $("#unselected-cluster").append("<option value='" + cluster + "'>" + cluster + "</option>");
+    });
+
+
+    $("#ok-button").text("Create");
+    $("#ok-button").attr("onclick", "onOkButtonClicked()");
+
+    document.getElementById("workspace-insert-panel").style.display = "block";
+}
+
+function hide_insert_workspace() {
+    document.getElementById("workspace-insert-panel").style.display = "none";
+}
+
+
+
+
+
+
+
+function onArrowRightClicked() {
+    var selected_cluster = $("#selected-cluster option:selected").val();
+    var unselected_cluster = $("#unselected-cluster option:selected").val();
+
+    if(unselected_cluster == "" || unselected_cluster == undefined) {
+        alert("Please select a cluster.");
+        return;
+    }
+
+    $("#selected-cluster").append("<option value='" + unselected_cluster + "'>" + unselected_cluster + "</option>");
+
+
+    $("#unselected-cluster").find("option[value='" + unselected_cluster + "']").remove();
+}
+
+
+
+
+function onArrowLeftClicked() {
+    var selected_cluster = $("#selected-cluster option:selected").val();
+    var unselected_cluster = $("#unselected-cluster option:selected").val();
+
+    if(selected_cluster == "" || selected_cluster == undefined) {
+        alert("Please select a cluster.");
+        return;
+    }
+
+    $("#unselected-cluster").append("<option value='" + selected_cluster + "'>" + selected_cluster + "</option>");
+
+    $("#selected-cluster").find("option[value='" + selected_cluster + "']").remove();
+}
+
+function onOkButtonClicked() {
+
+    var workspace = $("#workspace").val();
+    var clusters = [];
+    $("#selected-cluster option").each(function() {
+        clusters.push($(this).val());
+    });
+
+    if(workspace == "") {
+        alert("Please enter a workspace name.");
+        return;
+    }
+
+    if(clusters.length == 0) {
+        alert("Please select at least one cluster.");
+        return;
+    }
+
+
+    zfetch("/workspaces/", "POST", {name: workspace, clusters: clusters}).then(data => {
+        get_workspace_list();
+        hide_insert_workspace();
+    });
+
+}
+
+function onModifyButtonClicked() {
+
+    var workspace = $("#workspace").val();
+    var clusters = [];
+    $("#selected-cluster option").each(function() {
+        clusters.push($(this).val());
+    });
+
+
+    if(workspace == "") {
+        alert("Please enter a workspace name.");
+        return;
+    }
+    
+    if(clusters.length == 0) {
+        alert("Please select at least one cluster.");
+        return;
+    }
+    
+    
+    zfetch("/workspaces/" + workspace, "PUT", {name: workspace, clusters: clusters}).then(data => {
+        get_workspace_list();
+        hide_insert_workspace();
+    });
+
+}
+
+
+update_clusters_info = _update_clusters_info;
+
+get_clusters_info();
+
+</script>

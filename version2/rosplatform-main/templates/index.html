@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDGE Server</title>
+    <link rel="shortcut icon" href="">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+
+    <script src="static/js/jquery-3.7.1.min.js"></script>
+    <script src="static/js/ag-grid-community.min.js"></script>
+    <script src="static/js/chart.js"></script>
+    <script src="static/js/main.js"></script>
+    <script src="static/js/ag-grid-extra.js"></script>
+    <script src="static/js/grafana.js"></script>
+    <script src="static/js/request.js"></script>
+
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/all.min.css" rel="stylesheet">
+    <link href="static/css/main.css" rel="stylesheet">
+    <link href="static/css/timer.css" rel="stylesheet">
+    <link href="static/css/paperlogy.css" rel="stylesheet" />
+    <link href="static/css/ag-grid.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="top-nav">
+        <div class="top-nav-left"> 
+            <img src="static/images/top_icon2.png" alt="top_icon" style="width: 70%; height: 70%;">
+        </div>
+        <div class="top-nav-center" style="width: 100%; margin-right: 10px; ">
+            <div class="top-nav-center-left" style="width: 100%;  height: 45px; background: #272727; border-radius: 3px; padding: 5px;display: flex;">
+                <span class="txt-span"> PAGE </span>
+                <span class="txt-span" style="margin: 0 5px; color: #929292;"> | </span>
+                <span class="txt-span2"> User Info </span>
+            </div>
+            
+        </div>
+
+        <div class="top-nav-right" style="display: flex; justify-content: space-between; align-items: center; height: 100%;">
+            <div class="top-nav-right-setting middle-center">
+                <a href="#">
+                    <img src="static/images/setting.png" alt="setting">
+                </a>
+            </div>
+            <div class="top-nav-right-setting middle-center">
+                <img src="static/images/user_active.png" alt="user_active" >
+            </div>
+            <div class="top-nav-right-setting middle-center" style="width: 200px; flex-direction: column; align-items: flex-start; padding: 5px;">
+                <div class="user-info-txt">
+                    Platform Manger
+                </div>
+                <div id="user-info-txt2" class="user-info-txt2">
+                    User123
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="main-container-left" >
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-toggle" onclick="fetchData(this, event,'dashboard')">
+                        <img src="static/svg/side_dashboard.svg" alt="side_dashboard" class="sidebar-active"> <span>Dashboard</span>
+                    </div>
+
+                    <div class="sidebar-toggle" onclick="fetchData(this, event,'cluster')">
+                        <img src="static/svg/side_cluster.svg" alt="side_cluster" > <span>Cluster</span>
+                    </div>
+                    <div class="sidebar-toggle" onclick="fetchData(this, event,'node')">
+                        <img src="static/svg/side_node.svg" alt="side_node" > <span>Node</span>
+                    </div>
+                    <div class="sidebar-toggle"  onclick="fetchData(this, event,'pod')">
+                        <img src="static/svg/side_pod.svg" alt="side_pod" > <span>Pod</span>
+                    </div>
+                    <div class="sidebar-toggle" onclick="fetchData(this, event,'monitoring')">
+                        <img src="static/svg/side_monitoring.svg" alt="side_monitoring" > <span>Monitoring</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-toggle"  onclick="fetchData(this, event,'platformservice')">
+                        <img src="static/svg/side_platformservice.svg" alt="side_platformservice" > <span>Platform Service</span>
+                    </div>
+
+                    <div class="sidebar-toggle"  onclick="fetchData(this, event,'user_page')">
+                        <img src="static/svg/side_user.svg" alt="side_user" > <span>User</span>
+                    </div>
+                    <div class="sidebar-toggle"  onclick="fetchData(this, event,'workspace')">
+                        <img src="static/svg/side_workspace.svg" alt="side_workspace" > <span>Workspace</span>
+                    </div>
+                    <div class="sidebar-toggle"  onclick="fetchData(this, event,'project')">
+                        <img src="static/svg/side_project.svg" alt="side_project" > <span>Project</span>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-toggle"  onclick="fetchData(this, event,'robot')">
+                        <img src="static/svg/side_robot.svg" alt="side_robot" > <span>Robot</span>
+                    </div>
+
+                    <div class="sidebar-toggle"  onclick="fetchData(this, event,'topic')">
+                        <img src="static/svg/side_topic.svg" alt="side_topic" > <span>Topic</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-sidebar">
+                <div class="sidebar-toggle" style="display: flex; align-items: center; margin-bottom:0px;"  onclick="logout()">
+                    <img src="static/svg/side_logout.svg" alt="side_logout" > <span>Logout</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-container-right" style="width: 100%;height: 100%;">
+             <main id="main-content" class="main-content">
+
+             </main>
+        </div>
+    </div>
+    <div class="show-grafana" onclick="closeGrafana()">
+        <div class="show-grafana-content">
+            <div class="modal-header">
+                <div id="grafana-title" class="grafana-title">ms-master</div>
+                <div style="margin-left: auto; cursor: pointer; color: #fff;font-weight: bold; padding: 5px; border-radius: 3px;">
+                   X
+                </div>
+            </div>
+            <div class="modal-body" style="height: calc(100% - 30px);" onclick="closeGrafana()">
+                <iframe id="grafana-iframe" src="" style="width: 100%; height: 100%;"></iframe>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchData(undefined, undefined, 'dashboard');
+            check_user()
+        });
+
+        $( document ).ready(function() {
+            fetchData(undefined, undefined, 'dashboard');
+            check_user()
+        });
+
+    </script>
+
+</body>
+</html> 

@@ -1,0 +1,547 @@
+<div class="cluster-container">
+    <div class="cluster-info-top" style="background-image: url(static/images/bg-t-r.png); background-position: right top; background-repeat: no-repeat;">
+        <div class="cluster-header">
+            <img src="static/images/volume-m.png" width="40px" height="40px" alt="cluster_info" class="cluster-header-icon"> <span class="cluster-header-title">Volume</span>
+        </div>
+        
+        <div style="background: var(--box-inner-color2); width: auto; height: 100%; margin: 10px; padding: 10px;
+        display: flex; flex-direction: column;">
+            <div class="cluster-detail-sidebar">
+                Volume List
+            </div>
+            <div style="display: flex;  flex-direction: column; margin-bottom: 10px; margin-top: 10px;">
+                <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                    <div style="width: 200px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center;">
+                        <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;"> 
+                            <img src="static/images/workspace-w.png" alt="node"><span>Workspace</span> 
+                        </div>
+                            
+                        <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                        padding-left: 10px;">
+                            <select name="workspace_names" id="workspace_names" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"
+                            onchange="onWorkspaceNameChanged(); onWorkspaceNameChanged2()" aria-label="Select workspace">
+                                <option value="*">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="width: 200px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center;margin-left: 10px;">
+                        <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;"> 
+                            <img src="static/images/project-w.png" alt="node"><span>Project</span> 
+                        </div>
+                            
+                        <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                        padding-left: 10px;">
+                            <select name="project_names" id="project_names" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"
+                            onchange="onProjectNameChanged(); onProjectNameChanged2()" aria-label="Select project">
+                                <option value="*">All</option>
+                                <option value="project1">project1</option>
+                                <option value="project2">project2</option>
+                                <option value="project3">project3</option>
+                                <option value="project4">project4</option>
+                                <option value="project5">project5</option>
+                                <option value="project6">project6</option>
+                                <option value="project7">project7</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="width: 200px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center;margin-left: 10px;">
+                        <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;"> 
+                            <img src="static/images/cluster-w.png" alt="node"><span>Cluster</span> 
+                        </div>
+                            
+                        <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                        padding-left: 10px;">
+                            <select name="cluster_names" id="cluster_names" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"
+                            onchange="onClusterNameChanged(); onClusterNameChanged2()" aria-label="Select cluster">
+                                <option value="*">All</option>
+                                <option value="edge">edge</option>
+                                <option value="zento">zento</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                    <div id="pv-button" style="cursor: pointer; background: #00B050; width: 100px; display: flex; flex-direction: row; align-items: center; justify-content: center" onclick="onPvClicked()">PV</div>
+                    <div id="pvc-button" style="cursor: pointer; background: #0F0F0F; width: 100px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px;" onclick="onPvcClicked()">PVC</div>
+                </div>
+
+                <div id="pv-list">
+                    <div>
+                        Persistent Volume List
+                    </div>
+
+                    <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                        <div style="border-radius: 3px; background: #00B050; width: 90px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px;">
+                            <i class="fas fa-plus" style="margin-right: 5px;"></i> <span style="color: #fff; font-size: 14px; font-weight: 600;">Create</span>
+                        </div>
+                        <div style="border-radius: 3px; background: #D30F0F;; width: 90px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px;">
+                            <i class="fas fa-trash" style="margin-right: 5px;"></i> <span style="color: #fff; font-size: 14px; font-weight: 600;">Delete</span>
+                        </div>
+                        <div style="width: 400px; height: 40px; background: var(--box-inner-color); 
+                            display: flex;  flex-direction: row; align-items: center; padding-left: 10px;">
+                            <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;padding-right: 10px;"> 
+                                <i class="fas fa-search" style="margin-right: 5px;"></i><span>Search</span> 
+                            </div>
+                            <input type="text" id="filter-text-box" placeholder="Search..." oninput="onFilterTextBoxChanged()" 
+                            style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"/>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div id="pvc-list" style="display: none;">
+                    <div>
+                        Persistent Volume Claim List
+                    </div>
+
+                    <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                        <div style="border-radius: 3px; background: #00B050; width: 90px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px;">
+                            <i class="fas fa-plus" style="margin-right: 5px;"></i> <span style="color: #fff; font-size: 14px; font-weight: 600;">Create</span>
+                        </div>
+                        <div style="border-radius: 3px; background: #D30F0F;; width: 90px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px;">
+                            <i class="fas fa-trash" style="margin-right: 5px;"></i> <span style="color: #fff; font-size: 14px; font-weight: 600;">Delete</span>
+                        </div>
+                        <div style="width: 400px; height: 40px; background: var(--box-inner-color); 
+                            display: flex;  flex-direction: row; align-items: center; padding-left: 10px;">
+                            <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;padding-right: 10px;"> 
+                                <i class="fas fa-search" style="margin-right: 5px;"></i><span>Search</span> 
+                            </div>
+                            <input type="text" id="filter-text-box2" placeholder="Search..." oninput="onFilterTextBoxChanged2()" 
+                            style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"/>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            <div id="pv-chart" style="height: 100%; width: auto;">
+
+            </div>
+
+            <div id="pvc-chart" style="height: 100%; width: auto; display: none;">
+
+            </div>
+        </div>
+        
+    </div>
+</div>
+<script>
+
+    var onFilterTextBoxChanged = null;
+    var onClusterNameChanged = null;
+    var onProjectNameChanged = null;
+    var onWorkspaceNameChanged = null;
+
+    var onFilterTextBoxChanged2 = null;
+    var onClusterNameChanged2 = null;
+    var onProjectNameChanged2 = null;
+    var onWorkspaceNameChanged2 = null;
+
+    var on_update_cluserinfo_pv = null;
+    var on_update_cluserinfo_pvc = null;
+
+
+    update_clusters_info = function(clusters_info) {
+        $("#cluster_names").empty();
+        $("#cluster_names").append("<option value='*'>All</option>");
+
+        $("#select-cluster").empty();
+
+        clusters_info.forEach(cluster => {
+
+            const cluster_name = cluster.cluster_name;
+            $("#cluster_names").append("<option value='"+cluster_name+"'>"+cluster_name+"</option>");
+
+            
+        });
+
+        on_update_cluserinfo_pv(clusters_info);
+        on_update_cluserinfo_pvc(clusters_info);
+    }
+
+    
+
+    function PvDetail() {
+
+        let cluster_name = "*";
+        let project_name = "*";
+        let workspace_name = "*";
+
+        function cluster_valid(node) {
+
+            if (cluster_name === "*") {
+                return true;
+            }else if (node.data.cluster === cluster_name) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function project_valid(node) {
+            if (project_name === "*") {
+                return true;
+            }else if (node.data.project === project_name) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function workspace_valid(node) {
+            if (workspace_name === "*") {
+                return true;
+            }else if (node.data.workspace === workspace_name) {
+                return true;
+            }
+
+            return false;
+        }
+                
+        function doesExternalFilterPass(node) {
+
+            if (cluster_name === "*" && project_name === "*" && workspace_name === "*") {
+                return true;
+            }else if(cluster_valid(node) && project_valid(node) && workspace_valid(node)) {
+                return true;
+            }
+            return false;
+        }
+
+    
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+                
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", minWidth: 140, flex: 1, pinned: "left"},
+                { field: "workspace", headerName: "Workspace", minWidth: 120, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "project", headerName: "project", minWidth: 120, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "cluster", headerName: "Cluster", minWidth: 120, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "capacity", headerName: "Capacity", width: 100, cellStyle: {textAlign: "center"} },
+                { field: "accessmodes", headerName: "Access Modes", minWidth: 150, flex: 2, cellStyle: {textAlign: "center"} },
+                { field: "reclaimpolicy", headerName: "Reclaim Policy", minWidth: 150, flex: 2, cellStyle: {textAlign: "center"} },
+                { field: "status", headerName: "Status", width: 100, cellStyle: {textAlign: "center"}, cellRenderer: StatusRenderer },
+                { field: "storageclass", headerName: "Storage Class", width: 130,  cellStyle: {textAlign: "center"}},
+                { field: "reason", headerName: "Reason", width: 130,  cellStyle: {textAlign: "center"}},
+                { field: "date", headerName: "Date", width: 180, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true,
+            isExternalFilterPresent: isExternalFilterPresent,
+            doesExternalFilterPass: doesExternalFilterPass
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#pv-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function isExternalFilterPresent() {
+            return cluster_name !== "*" || project_name !== "*" || workspace_name !== "*";
+        }
+
+        function _onFilterTextBoxChanged() {
+            gridApi.setGridOption(
+                "quickFilterText",
+                document.getElementById("filter-text-box").value,
+            );
+        }
+
+        function _onClusterNameChanged() {
+            cluster_name = document.getElementById("cluster_names").value;
+            gridApi.onFilterChanged();
+        }
+
+        function _onProjectNameChanged() {
+            project_name = document.getElementById("project_names").value;
+            gridApi.onFilterChanged();
+        }
+
+        function _onWorkspaceNameChanged() {
+            workspace_name = document.getElementById("workspace_names").value;
+            gridApi.onFilterChanged();
+        }
+
+        on_update_cluserinfo_pv = function(clusters_info) {
+            gridApi.setGridOption("rowData", []);
+
+            const current_user = get_current_user();
+
+            clusters_info.forEach(cluster => {
+                const cluster_name = cluster.cluster_name;
+
+                if(checkProperty(cluster, "persistent_volumes")) {
+
+                    for(const pv_name in cluster["persistent_volumes"]) {
+                        const pv = cluster["persistent_volumes"][pv_name];
+
+                        const username = checkProperty(pv.metadata, "annotations") && checkProperty(pv.metadata.annotations, "username") ? pv.metadata.annotations.username : "";
+
+                        if(current_user.username != username) {
+                            continue;
+                        }
+
+                        const workspace = checkProperty(pv.metadata, "annotations") && checkProperty(pv.metadata.annotations, "workspace") ? pv.metadata.annotations.workspace : "";
+                        const project = checkProperty(pv.metadata, "annotations") && checkProperty(pv.metadata.annotations, "project") ? pv.metadata.annotations.project : "";
+
+                        const date = convertUTCToSeoul(pv.metadata.creationTimestamp);
+
+                        const reason = pv.status.reason ? pv.status.reason : "";
+
+                        const newItems = [{ name: pv.metadata.name, workspace: workspace, project: project, cluster: cluster_name, capacity: pv.spec.capacity.storage, accessmodes: pv.spec.accessModes, reclaimpolicy: pv.spec.persistentVolumeReclaimPolicy, status: pv.status.phase, storageclass: pv.spec.storageClassName, reason: reason, date: date }];
+
+                        const res = gridApi.applyTransaction({
+                            add: newItems
+                        });
+
+                    }
+
+                }
+               
+            });
+        }
+
+        onFilterTextBoxChanged = _onFilterTextBoxChanged;
+        onClusterNameChanged = _onClusterNameChanged;
+        onProjectNameChanged = _onProjectNameChanged;
+        onWorkspaceNameChanged = _onWorkspaceNameChanged;
+    }
+
+
+    function PvcDetail() {
+
+        let cluster_name = "*";
+        let project_name = "*";
+        let workspace_name = "*";
+
+
+        function cluster_valid(node) {
+
+            if (cluster_name === "*") {
+                return true;
+            }else if (node.data.cluster === cluster_name) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function project_valid(node) {
+            if (project_name === "*") {
+                return true;
+            }else if (node.data.project === project_name) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function workspace_valid(node) {
+            if (workspace_name === "*") {
+                return true;
+            }else if (node.data.workspace === workspace_name) {
+                return true;
+            }
+
+            return false;
+        }
+                
+        function doesExternalFilterPass(node) {
+
+            if (cluster_name === "*" && project_name === "*" && workspace_name === "*") {
+                return true;
+            }else if(cluster_valid(node) && project_valid(node) && workspace_valid(node)) {
+                return true;
+            }
+            return false;
+        }
+
+
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+                { name: "pvc1", workspace: "workspace1", project: "project1", cluster: "cluster1", capacity: "10Gi", accessmodes: "ReadWriteOnce", port: "Retain", status: "available", storageclass: "standard", date: "2021-01-01 12:00:00" },
+                { name: "pvc2", workspace: "workspace2", project: "project2", cluster: "cluster2", capacity: "10Gi", accessmodes: "ReadWriteOnce", port: "Retain", status: "available", storageclass: "standard", date: "2021-01-02 12:00:00" },
+                { name: "pvc3", workspace: "workspace3", project: "project3", cluster: "cluster3", capacity: "10Gi", accessmodes: "ReadWriteOnce", port: "Retain", status: "available", storageclass: "standard", date: "2021-01-03 12:00:00" },
+                { name: "pvc4", workspace: "workspace4", project: "project4", cluster: "cluster4", capacity: "10Gi", accessmodes: "ReadWriteOnce", port: "Retain", status: "bound", storageclass: "standard", date: "2021-01-04 12:00:00" },
+                { name: "pvc5", workspace: "workspace5", project: "project5", cluster: "cluster5", capacity: "10Gi", accessmodes: "ReadWriteOnce", port: "Retain", status: "bound", storageclass: "standard", date: "2021-01-05 12:00:00" },
+                { name: "pvc6", workspace: "workspace6", project: "project6", cluster: "cluster6", capacity: "10Gi", accessmodes: "ReadWriteOnce", port: "Retain", status: "bound", storageclass: "standard", date: "2021-01-06 12:00:00" },
+                { name: "pvc7", workspace: "workspace7", project: "project7", cluster: "cluster7", capacity: "10Gi", accessmodes: "ReadWriteOnce", port: "Retain", status: "bound", storageclass: "standard", date: "2021-01-07 12:00:00" },
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", minWidth: 140, flex: 1, pinned: "left"},
+                { field: "workspace", headerName: "Workspace", minWidth: 120, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "project", headerName: "project", minWidth: 120, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "cluster", headerName: "Cluster", minWidth: 120, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "volume", headerName: "Volume", width: 100, cellStyle: {textAlign: "center"} },
+                { field: "capacity", headerName: "Capacity", width: 100, cellStyle: {textAlign: "center"} },
+                { field: "accessmodes", headerName: "Access Modes", minWidth: 150, flex: 2 },
+                { field: "status", headerName: "Status", width: 100, cellStyle: {textAlign: "center"}, cellRenderer: StatusRenderer },
+                { field: "storageclass", headerName: "Storage Class", width: 130,  cellStyle: {textAlign: "center"}},
+                { field: "date", headerName: "Date", width: 180, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true,
+            isExternalFilterPresent: isExternalFilterPresent,
+            doesExternalFilterPass: doesExternalFilterPass
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#pvc-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function isExternalFilterPresent() {
+            return cluster_name !== "*" || project_name !== "*" || workspace_name !== "*";
+        }
+
+        function _onFilterTextBoxChanged() {
+            gridApi.setGridOption(
+                "quickFilterText",
+                document.getElementById("filter-text-box2").value,
+            );
+        }
+
+        function _onClusterNameChanged2() {
+            cluster_name = document.getElementById("cluster_names").value;
+            gridApi.onFilterChanged();
+        }
+
+        function _onProjectNameChanged2() {
+            project_name = document.getElementById("project_names").value;
+            gridApi.onFilterChanged();
+        }
+
+        function _onWorkspaceNameChanged2() {
+            workspace_name = document.getElementById("workspace_names").value;
+            gridApi.onFilterChanged();
+        }
+
+
+        on_update_cluserinfo_pvc = function(clusters_info) {
+            gridApi.setGridOption("rowData", []);
+
+            const current_user = get_current_user();
+
+            clusters_info.forEach(cluster => {
+                const cluster_name = cluster.cluster_name;
+
+                if(checkProperty(cluster, "persistent_volume_claims")) {
+
+                    for(const pvc_name in cluster["persistent_volume_claims"]) {
+                        const pvc = cluster["persistent_volume_claims"][pvc_name];
+
+
+
+                        const username = checkProperty(pvc.metadata, "annotations") && checkProperty(pvc.metadata.annotations, "username") ? pvc.metadata.annotations.username : "";
+
+                        if(current_user.username != username) {
+                            continue;
+                        }
+
+                        const workspace = checkProperty(pvc.metadata, "annotations") && checkProperty(pvc.metadata.annotations, "workspace") ? pvc.metadata.annotations.workspace : "";
+                        const project = checkProperty(pvc.metadata, "annotations") && checkProperty(pvc.metadata.annotations, "project") ? pvc.metadata.annotations.project : "";
+
+                        const date = convertUTCToSeoul(pvc.metadata.creationTimestamp);
+
+                        const volume = pvc.spec.volumeName ? pvc.spec.volumeName : "";
+
+                        const newItems = [{ name: pvc.metadata.name, workspace: workspace, project: project, cluster: cluster_name, volume: volume, capacity: pvc.spec.resources.requests.storage, accessmodes: pvc.spec.accessModes, status: pvc.status.phase, storageclass: pvc.spec.storageClassName, date: date }];
+
+                        const res = gridApi.applyTransaction({
+                            add: newItems
+                        });
+
+                    }
+
+                }
+               
+            });
+        }
+
+        onFilterTextBoxChanged2 = _onFilterTextBoxChanged;
+        onClusterNameChanged2 = _onClusterNameChanged2;
+        onProjectNameChanged2 = _onProjectNameChanged2;
+        onWorkspaceNameChanged2 = _onWorkspaceNameChanged2;
+    }
+
+   
+
+    PvDetail();
+    PvcDetail();
+
+    function onPvClicked() {
+        document.getElementById("pv-list").style.display = "block";
+        document.getElementById("pvc-list").style.display = "none";
+
+        document.getElementById("pv-chart").style.display = "block";
+        document.getElementById("pvc-chart").style.display = "none";
+
+
+        document.getElementById("pv-button").style.background = "#00B050";
+        document.getElementById("pvc-button").style.background = "#0F0F0F";
+    }
+
+    function onPvcClicked() {
+        document.getElementById("pv-list").style.display = "none";
+        document.getElementById("pvc-list").style.display = "block";
+
+        document.getElementById("pv-chart").style.display = "none";
+        document.getElementById("pvc-chart").style.display = "block";
+
+        document.getElementById("pv-button").style.background = "#0F0F0F";
+        document.getElementById("pvc-button").style.background = "#00B050";
+    }
+
+</script>
+
+
+<script>
+
+
+
+function get_project_list() {
+
+
+    get_projects(get_current_user().username, (data) => {
+        user_projects = data;
+        var options = "";
+
+        options += "<option value='*'>All</option>";
+
+        for(var i = 0; i < data.length; i++) {
+            options += "<option value='" + data[i].name + "'>" + data[i].name + "</option>";
+        }        
+
+        $("#project_names").html(options);
+    });
+}
+
+function get_workspace_list() {
+    zfetch("/workspaces/as_user/" + get_current_user().username, "GET", null).then(data => {
+        var options = "";
+
+        options += "<option value='*'>All</option>";
+
+        for(var i = 0; i < data.length; i++) {
+            options += "<option value='" + data[i].name + "'>" + data[i].name + "</option>";
+        }        
+
+        $("#workspace_names").html(options);
+    });
+}
+
+
+get_project_list();
+get_workspace_list();
+get_clusters_info();
+
+
+</script>

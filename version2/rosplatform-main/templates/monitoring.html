@@ -1,0 +1,74 @@
+<div class="cluster-container">
+    <div class="cluster-info-top" style="background-image: url(static/images/bg-t-r.png); background-position: right top; background-repeat: no-repeat;">
+        <div style="width: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+        padding-left: 10px;">
+            <select name="cluster_names" id="cluster_names" style="font-size: 16px; font-weight: 700; background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"
+                onchange="onClusterNameChanged()" aria-label="Select cluster">
+                <option value="*">All</option>
+                <option value="edge">edge</option>
+                <option value="zento">zento</option>
+            </select>
+        </div>
+        <div style="width: 100%; height: calc(100% - 40px);">
+            <iframe id="monitoring-grafana-iframe" src="" style="width: 100%; height: 100%;"></iframe>
+        </div>
+        
+    </div>
+    
+</div>
+
+<script>
+
+    var onFilterTextBoxChanged = null;
+    var onClusterNameChanged = null;
+    var update_clusters_info = null;
+    
+
+    function ClusterDetail() {
+
+
+        function _onClusterNameChanged() {
+            cluster_name = document.getElementById("cluster_names").value;
+            openMonitoringGrafana(cluster_name);
+        }
+
+
+
+        function _update_clusters_info(clusters_info) {
+            $("#cluster_names").empty();
+            clusters_info.forEach(cluster => {
+
+                const cluster_name = cluster.cluster_name;
+                $("#cluster_names").append("<option value='"+cluster_name+"'>"+cluster_name+"</option>");
+
+            });
+
+            if(clusters_info.length > 0){
+                openMonitoringGrafana(clusters_info[0].cluster_name);
+            }
+        }
+
+
+        onClusterNameChanged = _onClusterNameChanged;
+        update_clusters_info = _update_clusters_info;
+    }
+
+    ClusterDetail();
+
+    function openMonitoringGrafana(cluster_name) {
+
+        const data_source_name = getGrafanaDataSouceName(cluster_name);
+        const grafana_hash = getGrafanaHash('kubernetes-compute-resources-cluster');
+
+        document.querySelector('#monitoring-grafana-iframe').src = `/d/${grafana_hash}/${grafana_type}?orgId=1&refresh=10s&var-datasource=${getGrafanaDataSouceName(grafana_source_name)}&kiosk&var-node=${grafana_node_name}`;
+    }
+
+</script>
+
+
+
+<script>
+
+get_clusters_info();
+
+</script>

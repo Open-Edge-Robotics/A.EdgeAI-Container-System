@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: webserver
+  namespace: gedge
+  labels:
+    app: webserver
+spec:
+  serviceAccount: zento
+  restartPolicy: Always
+  containers:
+  - name: webserver
+    image: docker.zento.co.kr/edge/webserver:latest
+    ports:
+    - containerPort: 8000
+    imagePullPolicy: Always
+  imagePullSecrets:
+    - name: harborreg
+    - name: robot3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webserver
+  namespace: gedge
+  labels:
+    app: webserver
+spec:
+  selector:
+    app: webserver
+  ports:
+  - port: 8000
+    targetPort: 8000
+    nodePort: 30005
+  type: NodePort
+---

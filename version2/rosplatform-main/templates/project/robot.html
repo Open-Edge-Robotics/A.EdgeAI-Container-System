@@ -1,0 +1,692 @@
+<div class="cluster-container">
+    <div class="cluster-info-top" style="background-image: url(static/images/bg-t-r.png); 
+    background-position: right top; background-repeat: no-repeat;">
+        <div class="cluster-header">
+            <img src="static/images/robot-m.png" width="40px" height="40px" alt="cluster_info" class="cluster-header-icon"> <span class="cluster-header-title">Robot</span>
+        </div>
+        
+        <div style="background: var(--box-inner-color2); width: auto; height: 365px; margin: 10px; padding: 10px;
+        display: flex; flex-direction: column;">
+            <div class="cluster-detail-sidebar">
+                Robot List
+            </div>
+            <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                <div style="width: 400px; height: 40px; background: var(--box-inner-color); 
+                    display: flex;  flex-direction: row; align-items: center; padding-left: 10px;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;padding-right: 10px;"> 
+                        <i class="fas fa-search" style="margin-right: 5px;"></i><span>Search</span> 
+                    </div>
+                    <input type="text" id="filter-text-box" placeholder="Search..." oninput="onFilterTextBoxChanged()" 
+                    style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"/>
+                </div>
+                
+            </div>
+            <div id="robot-chart" style="height: 100%; width: auto; min-height: 300px;">
+
+            </div>
+        </div>
+
+        <div style="background: var(--box-inner-color2); width: auto; height: 100%; margin: 10px; padding: 10px;
+                   display: flex; flex-direction: column;">
+            <div class="cluster-detail-sidebar">
+                Bridge
+            </div>
+            <div id="bridge-chart" style="height: 100%; width: auto; min-height: 300px;">
+
+            </div>
+
+            <div style="height: 1px;background: #363636;width: 100%; margin-top: 10px; margin-bottom: 10px;">
+
+            </div>
+            <div style="display: flex; flex-direction: row; align-items: center; margin-top: 10px; display: none;">
+                <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                        padding-left: 10px;">
+                    <select name="from_bridge" id="from_bridge" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;" aria-label="Select target cluster" onchange="change_selection()">
+                        <option value="cluster1">cluster1</option>
+                        <option value="cluster2">cluster2</option>
+                        <option value="cluster3">cluster3</option>
+                        <option value="cluster4">cluster4</option>
+                        <option value="cluster5">cluster5</option>
+                        <option value="cluster6">cluster6</option>
+                        <option value="cluster7">cluster7</option>
+                    </select>
+                </div>
+                <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                        padding-left: 10px;">
+                    <select name="t_type" id="t_type" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;" aria-label="Select target cluster" onchange="change_selection()">
+                        <option value="topic">Topic</option>
+                        <option value="service">Service</option>
+                        <option value="action">Action</option>
+                    </select>
+                </div>
+                <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                        padding-left: 10px;">
+                    <select name="name_select" id="name_select" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;" aria-label="Select target cluster">
+                    </select>
+                </div>
+                <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                        padding-left: 10px;">
+                    <select name="to_bridge" id="to_bridge" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;" aria-label="Select target cluster">
+                        <option value="cluster1">cluster1</option>
+                        <option value="cluster2">cluster2</option>
+                        <option value="cluster3">cluster3</option>
+                        <option value="cluster4">cluster4</option>
+                        <option value="cluster5">cluster5</option>
+                        <option value="cluster6">cluster6</option>
+                        <option value="cluster7">cluster7</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: row; align-items: center; margin-top: 10px;margin-bottom: 10px;">
+                <div id="connect-button" style="cursor: pointer; background: #00B050; width: 100px; display: flex; flex-direction: row; align-items: center; justify-content: center; height: 30px;">Connect</div>
+                <div id="disconnect-button" style="cursor: pointer; background: #0F0F0F; width: 100px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px; height: 30px;">Disconnect</div>
+                <div id="monitor-button" style="cursor: pointer; background: #007234; width: 100px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px; height: 30px;">Monitor</div>
+            </div>
+
+            <div id="connect-chart" style="height: 100%; width: auto; min-height: 300px;">
+
+            </div>
+        </div>
+        
+    </div>
+</div>
+<div class="out_panel" id="connect_bridge_modal">
+    <div class="modal-overlay">
+        <div class="modal-content" style="height: 90%; width: 100%;">
+            <div class="modal-logo-container">
+                <img src="static/images/logo2.png" alt="logo" class="modal-logo">
+            </div>
+            <div class="modal-title-container">
+                <span class="modal-title" id="modal-title">Connect Bridge</span>
+            </div>
+            <div class="form-row">
+                <div class="insert-title">From Bridge: </div>
+                <div class="insert-input-box"> 
+                    <select id="from_bridge2" type="text" placeholder="Please enter from bridge" style="outline: none;
+                    padding: 5px;
+                    width: 100%;
+                    background: transparent;
+                    border: 0;
+                    color: #fff;
+                    font-size: 14px;" onchange="change_selection2()">
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="insert-title">To Bridge: </div>
+                <div class="insert-input-box"> 
+                    <select id="to_bridge2" type="text" placeholder="Please enter to bridge" style="outline: none;
+                    padding: 5px;
+                    width: 100%;
+                    background: transparent;
+                    border: 0;
+                    color: #fff;
+                    font-size: 14px;">
+                    </select>
+                </div>
+            </div>
+            <div style="height: 2px; background: #363636; margin: 10px 0;">
+
+            </div>
+            <div class="form-row" style="height: 100%; width: 100%;">
+                <div id="bridge-resourceinfo-chart" style="height: 100%; width: 100%; min-height: 300px;">
+
+                </div>
+            </div>
+            <div style="height: 2px; background: #363636; margin: 10px 0;">
+
+            </div>
+            <div class="modal-buttons">
+                <div class="ok-button" onclick="okConnectBridge()">
+                    Connect
+                </div>
+                <div class="close-button" onclick="closeConnectBridge()">
+                    Close
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var onFilterTextBoxChanged = null;
+    var onClusterNameChanged = null;
+
+    var update_ros_info_bridge = null;
+
+    var onCreateConnection = null;
+    var onCreateConnection2 = null;
+    var onDisconnectConnection = null;
+    var update_connections = null;
+    var change_selection2 = null;
+    var okConnectBridge = null;
+
+    function RobotDetail() {
+
+    
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+                { name: "robort1", os: "ros 2.0", version: "2.0", creator: "creator 1", date: "2021-01-01 12:00:00" },
+                { name: "robort2", os: "ros 2.0", version: "2.0", creator: "creator 2", date: "2021-01-02 12:00:00" },
+                { name: "robort3", os: "ros 2.0", version: "2.0", creator: "creator 3", date: "2021-01-03 12:00:00" },
+                { name: "robort4", os: "ros 2.0", version: "2.0", creator: "creator 4", date: "2021-01-04 12:00:00" },
+                { name: "robort5", os: "ros 2.0", version: "2.0", creator: "creator 5", date: "2021-01-05 12:00:00" },
+                { name: "robort6", os: "ros 2.0", version: "2.0", creator: "creator 6", date: "2021-01-06 12:00:00" }
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", width: 150, pinned: "left"},
+                { field: "os", headerName: "OS", minWidth: 120, flex: 1 },
+                { field: "version", headerName: "ROS Version", width: 150, cellStyle: {textAlign: "center"} },
+                { field: "creator", headerName: "Creator", minWidth: 200 , flex: 1, cellStyle: {textAlign: "center"}},
+                { field: "date", headerName: "Date", width: 170, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#robot-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function _onFilterTextBoxChanged() {
+            gridApi.setGridOption(
+                "quickFilterText",
+                document.getElementById("filter-text-box").value,
+            );
+        }
+
+    
+        onFilterTextBoxChanged = _onFilterTextBoxChanged;
+    }
+
+
+    function BridgeDetail() {
+
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+               
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", minWidth: 150, flex: 1,  pinned: "left"},
+                { field: "hostname", headerName: "HostName", minWidth: 120, flex: 1 },
+                { field: "status", headerName: "Status", cellRenderer: StatusRenderer, width: 100 },
+                { field: "ip", headerName: "IP", width: 150, cellStyle: {textAlign: "center"} },
+                { field: "date", headerName: "Date", width: 170, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#bridge-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        update_ros_info_bridge = function(ros_info) {
+
+            gridApi.setGridOption("rowData", []);
+
+            var rowData = [];
+
+            for(const ros_info_cluster in ros_info) {
+                const ros_info_cluster_data = ros_info[ros_info_cluster];
+
+                rowData.push({
+                    name: ros_info_cluster_data.bridge_name ,
+                    hostname: ros_info_cluster_data.hostname,
+                    ip: ros_info_cluster_data.ip,
+                    clustername: ros_info_cluster_data.cluster_name,
+                    zeromq: ros_info_cluster_data.zeromq,
+                    status: ros_info_cluster_data.status,
+                    date: ros_info_cluster_data.date,
+                    rowdata: ros_info_cluster_data
+                });
+            
+            }
+
+            if(rowData.length > 0) {
+                //update_ros_info_node(rowData[0].rowdata);
+
+                gridApi.setGridOption("rowData", rowData);
+            }
+
+
+        }
+    }
+
+
+    function ConnectDetail() {
+
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "from_bridge", headerName: "From Bridge", pinned: "left", minWidth: 120, cellStyle: {textAlign: "center"}},
+                { field: "to_bridge", headerName: "To Bridge", pinned: "left", minWidth: 120, cellStyle: {textAlign: "center"} },
+                { field: "type", headerName: "Type", pinned: "left", cellRenderer: RosTypeRenderer, width: 100, cellStyle: {textAlign: "center"} },
+                { field: "name", headerName: "Name", minWidth: 200, pinned: "left", flex: 1},
+                { field: "types", headerName: "Types", minWidth: 200, flex: 1 },
+                { field: "from_zeromq", headerName: "From Zeromq", width: 170},
+                { field: "to_zeromq", headerName: "To Zeromq", width: 170},
+                { field: "created_at", headerName: "Date", width: 170, cellStyle: {textAlign: "center"}, valueFormatter: (params) => {
+                    return convertUTCToSeoul(params.value);
+                } },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true,
+            rowSelection: {
+                mode: 'multiRow',
+                checkboxes: true,
+                headerCheckbox: true,
+                enableClickSelection: true,
+            }
+        };
+
+        const myGridElement = document.querySelector('#connect-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+
+        onCreateConnection = function(data) {
+            zfetch("/bridges/connections", "POST", data).then(response => {
+
+                if(response.status == 'success') {
+                    gridApi.applyTransaction({ add: [response.data] });
+                }else{
+                    alert(response.message);
+                }
+            }).catch(error => {
+                console.log(error);
+            });
+        }
+
+        onCreateConnection2 = function(data) {
+
+    
+
+            zfetch("/bridges/connections", "POST", data).then(response => {
+                if(response.status == 'success') {
+                    gridApi.applyTransaction({ add: response.data.connection });
+                    $('#connect_bridge_modal').hide();
+                }else{
+                    alert(response.message);
+                }
+            });
+        }
+
+        onDisconnectConnection = function() {
+
+            
+
+            const selected_row = gridApi.getSelectedRows(); 
+
+
+            if(selected_row.length == 0) {
+                alert("Please select a connection");
+                return;
+            }
+
+            /*
+
+            const connection_id = selected_row[0].id;
+            zfetch(`/bridges/connections/${connection_id}`, "DELETE").then(response => {
+                gridApi.applyTransaction({ remove: [selected_row[0]] });
+            });
+            */
+
+
+            const connection_ids = selected_row.map(row => row.id);
+
+            zfetch(`/bridges/connections`, "DELETE", { connection_ids: connection_ids }).then(response => {
+                gridApi.applyTransaction({ remove: selected_row });
+            });
+        }
+
+        update_connections = function() {
+            zfetch("/bridges/connections", "GET").then(response => {
+                console.log(response);
+                gridApi.setGridOption("rowData", response);
+            });
+        }
+    }
+
+
+    function BridgeResourceInfo() {
+        const gridOptions = {
+            rowData: [
+            ],
+            columnDefs: [
+                { field: "type", headerName: "Type", cellRenderer: RosTypeRenderer, width: 100, cellStyle: {textAlign: "center"} },
+                { field: "name", headerName: "Name", minWidth: 200, flex: 1},
+                { field: "types", headerName: "Types", minWidth: 200, flex: 1 }
+            ],
+            rowSelection: {
+                mode: 'multiRow',
+                checkboxes: true,
+                headerCheckbox: true,
+                enableClickSelection: true,
+            }
+        }
+
+        const myGridElement = document.querySelector('#bridge-resourceinfo-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        update_bridge_resourceinfo = function(data) {
+            gridApi.setGridOption("rowData", data);
+        }
+
+        
+        change_selection2 = function()
+        {
+            const from_bridge = $('#from_bridge2').val();
+            const to_bridge = $('#to_bridge2').val();
+
+            gridApi.setGridOption("rowData", []);
+
+            var rowData = [];
+
+
+            for(const bridge_name in ros_info)
+            {
+                if(bridge_name == from_bridge)
+                {
+                    const ros_info_ = ros_info[bridge_name];
+
+                    for(var j = 0; j < ros_info_.topics.length; j++)
+                    {
+                        var topic = ros_info_.topics[j];
+                        rowData.push({
+                            type: "topic",
+                            name: topic['topic'],
+                            types: topic.types.join(", ")
+                        });
+                    }
+
+
+                    for(var j = 0; j < ros_info_.services.length; j++)
+                    {
+                        var service = ros_info_.services[j];
+                        rowData.push({
+                            type: "service",
+                            name: service['service'],
+                            types: service.types.join(", ")
+                        });
+                    }
+
+                    for(var j = 0; j < ros_info_.actions.length; j++)
+                    {
+                        var action = ros_info_.actions[j];
+                        rowData.push({
+                            type: "action",
+                            name: action['action'],
+                            types: action.types.join(", ")
+                        });
+                    }
+
+                
+            
+                }
+            }
+
+            gridApi.setGridOption("rowData", rowData);
+            
+        }
+
+        okConnectBridge = function() {
+            const selected_row = gridApi.getSelectedRows();
+            const from_bridge = $('#from_bridge2').val();
+            const to_bridge = $('#to_bridge2').val();
+
+
+
+            if(selected_row.length == 0)
+            {
+                alert("No data");
+                return;
+            }
+
+            if(from_bridge == to_bridge)
+            {
+                alert("From and To bridges are the same");
+                return;
+            }
+            console.log(selected_row);
+
+            var data = {
+                from_bridge: from_bridge,
+                to_bridge: to_bridge,
+                datas: selected_row,
+                from_zeromq: ros_info[from_bridge].zeromq,
+                to_zeromq: ros_info[to_bridge].zeromq
+            };
+
+            onCreateConnection2(data);
+        }
+    }
+
+    RobotDetail();
+    BridgeDetail();
+    ConnectDetail();
+    BridgeResourceInfo();
+
+    update_connections();
+
+</script>
+
+
+<script>
+
+
+
+function update_ros_info() {
+    get_ros_info().then(data => {
+        ros_info = data;
+        update_ros_info_bridge(ros_info);
+
+       
+        $('#from_bridge').empty();
+        $('#to_bridge').empty();
+
+        $('#from_bridge2').empty();
+        $('#to_bridge2').empty();
+        
+        for(const bridge_name in ros_info) {
+
+            $('#from_bridge').append(`<option value="${bridge_name}">${bridge_name}</option>`);
+            $('#to_bridge').append(`<option value="${bridge_name}">${bridge_name}</option>`);
+
+            $('#from_bridge2').append(`<option value="${bridge_name}">${bridge_name}</option>`);
+            $('#to_bridge2').append(`<option value="${bridge_name}">${bridge_name}</option>`);
+        
+        }
+
+
+        change_selection();
+        change_selection2();
+    });
+}
+
+
+update_ros_info();
+
+</script>
+
+
+<script>
+
+
+function change_selection()
+{
+
+    const from_bridge = $('#from_bridge').val();
+    const type_select = $('#t_type').val();
+    const to_bridge = $('#to_bridge').val();
+
+    $('#name_select').empty();
+
+    var names = [];
+
+    for(const bridge_name in ros_info)
+    {
+
+        if(bridge_name == from_bridge)
+        {
+
+            const ros_info_ = ros_info[bridge_name];
+            
+
+            if(type_select == "topic")
+            {
+                for(var j = 0; j < ros_info_.topics.length; j++)
+                {
+                    var topic = ros_info_.topics[j];
+                    names.push(topic['topic']);
+                }
+            }else if(type_select == "service")
+            {
+                for(var j = 0; j < ros_info_.services.length; j++)
+                {
+                    var service = ros_info_.services[j];
+                    names.push(service['service']);
+                }
+            }else if(type_select == "action")
+            {
+                for(var j = 0; j < ros_info_.actions.length; j++)
+                {
+                    var action = ros_info_.actions[j];
+                    names.push(action['action']);
+                }
+            }
+    
+            for(var j = 0; j < names.length; j++)
+            {
+                var name = names[j];
+                $('#name_select').append("<option value=\"" + name + "\">" + name + "</option>");
+            }
+        }
+    }
+
+    if(names.length == 0)
+    {
+        $('#name_select').append("<option value=\"\">No data</option>");
+    }
+}
+
+/*
+
+$('#connect-button').click(function() {
+    const from_bridge = $('#from_bridge').val();
+    const type_select = $('#t_type').val();
+    const name_= $('#name_select').val();
+    const to_bridge = $('#to_bridge').val();
+
+
+    if(from_bridge == "" || to_bridge == "" || type_select == "" || name_ == "")
+    {
+        alert("Please select all fields");
+        return;
+    }
+
+
+    if(name_ == "No data")
+    {
+        alert("No data");
+        return;
+    }
+
+    if(from_bridge == to_bridge)
+    {
+        alert("From and To bridges are the same");
+        return;
+    }
+
+    var types = "";
+
+    for(const bridge_name in ros_info)
+    {
+        if(bridge_name == from_bridge)
+        {
+            const ros_info_ = ros_info[bridge_name];
+
+            if(type_select == "topic")
+            {
+                for(var j = 0; j < ros_info_.topics.length; j++)
+                {
+                    var topic = ros_info_.topics[j];
+                    if(topic['topic'] == name_)
+                    {
+                        topic.types.forEach(element => {
+                            types += element + ",";
+                        });
+                        break;
+                    }
+                }
+            }else if(type_select == "service")
+            {
+                for(var j = 0; j < ros_info_.services.length; j++)
+                {
+                    var service = ros_info_.services[j];
+                    if(service['service'] == name_)
+                    {
+                        service.types.forEach(element => {
+                            types += element + ",";
+                        });
+                        break;
+                    }
+                }
+            }else if(type_select == "action")
+            {
+                for(var j = 0; j < ros_info_.actions.length; j++)
+                {
+                    var action = ros_info_.actions[j];
+                    if(action['action'] == name_)
+                    {
+                        action.types.forEach(element => {
+                            types += element + ",";
+                        });
+
+                        break;
+                    }
+                }
+            }
+
+            break;
+        }
+    }
+
+    if(types.length > 0)
+    {
+        types = types.substring(0, types.length - 1);
+    }
+
+    var data = {
+        from_bridge: from_bridge,
+        to_bridge: to_bridge,
+        type: type_select,
+        types: types,
+        name: name_,
+        from_zeromq: ros_info[from_bridge].zeromq,
+        to_zeromq: ros_info[to_bridge].zeromq
+    };
+
+    onCreateConnection(data);
+});
+*/
+
+$('#connect-button').click(function() {
+   $('#connect_bridge_modal').show();
+});
+
+
+$('#disconnect-button').click(function() {
+    onDisconnectConnection();
+});
+
+$('#connect_bridge_modal').hide();
+</script>

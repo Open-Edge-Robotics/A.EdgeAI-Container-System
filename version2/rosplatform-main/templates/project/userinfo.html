@@ -1,0 +1,382 @@
+<div style="width: 100%; height: 100%; padding: 10px;">
+
+    <div style="width: auto; height: 100%; 
+        border: 1px solid #363636;
+        display: flex; flex-direction: column;
+        padding: 10px;">
+        <div style="display: flex; flex-direction: row; height: 150px;">
+            <div style="width: 150px; height: 100%; background: #1C1C1C;
+            display: flex; align-items: center; justify-content: center;">
+
+                <div style="border-radius: 7.048px;
+                background: rgba(59, 59, 59, 0.5);
+                backdrop-filter: blur(1.7619045972824097px);
+                width: 120px; height: 120px;
+                display: flex; align-items: center; justify-content: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 45 45" fill="none">
+                    <path d="M22.1631 23.2556C27.7587 23.2556 32.3111 18.7031 32.3111 13.1068C32.3111 7.51055 27.7587 2.95811 22.1631 2.95811C16.5661 2.95811 12.0137 7.51055 12.0137 13.1068C12.0137 18.7031 16.5661 23.2556 22.1631 23.2556Z" fill="#00B050"/>
+                    <path d="M8.74184 41.7018H35.5835C38.636 41.7018 41.1183 39.2188 41.1183 36.167C41.1183 30.816 36.7645 26.4628 31.4135 26.4628H12.9119C7.56083 26.4628 3.20703 30.816 3.20703 36.167C3.20703 39.2188 5.68932 41.7018 8.74184 41.7018Z" fill="#00B050"/>
+                    </svg>
+                </div>
+            </div>
+            <div style="width: calc(100% - 150px); height: 100%;
+                display: flex; flex-direction: column;
+                padding: 30px;">
+                <span style="color: #00B050;font-size: 16px;font-weight: 900;">User</span>
+                <span id="user-info-name" style="font-size: 26px;font-weight: 900;">User1234</span>
+                <div style="display: flex; flex-direction: row; gap: 10px; margin-top: 20px;">
+                    <div class="user-info-btn" onclick="update_user_info()">정보 변경</div>
+                    <div class="user-info-btn" onclick="update_password()">비밀번호 변경</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="border-bottom: 1px solid #4D4D4D; background: #151515;display: flex; flex-direction: row; align-items: center; gap: 10px; margin-top: 0px;">
+            <img src="static/svg/myinfo.svg" alt="myinfo" style="width: 16px; height: 16px;">내 정보
+        </div>
+        <div style="font-size: 12px; display: flex; flex-direction: row; align-items: center; gap: 10px; margin-top: 10px;margin-left: 10px;">
+            <div style="width: 150px;">
+                <div style="padding-bottom: 10px;">
+                    <span>이메일</span>
+                </div>
+                <div style="padding-bottom: 10px;">
+                    <span>연락처</span>
+                </div>
+                <!-- div style="padding-bottom: 10px;">
+                    <span>주소</span>
+                </div -->
+                <div style="padding-bottom: 10px;">
+                    <span>유저타입</span>
+                </div>
+                <!-- div style="padding-bottom: 10px;">
+                    <span>가입일자</span>
+                </div -->
+                <div style="padding-bottom: 10px;">
+                    <span>워크스페이스</span>
+                </div>
+            </div>
+            <div>
+                <div style="padding-bottom: 10px;">
+                    <span id="user-info-email">user123@gmail.com</span>
+                </div>
+                <div style="padding-bottom: 10px;">
+                    <span id="user-info-phone">010-1234-5678</span>
+                </div>
+                <!-- div style="padding-bottom: 10px;">
+                    <span id="user-info-address">대전시 유성구 지족로 343</span>
+                </div -->
+                <div style="padding-bottom: 10px;">
+                    <span id="user-info-type">Normal</span>
+                </div>  
+                <!-- div style="padding-bottom: 10px;">
+                    <span id="user-info-date">2021-01-01</span>
+                </div -->
+                <div style="padding-bottom: 10px;">
+                    <span id="user-info-workspace">workspace1</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="min-height: 300px; background: var(--box-inner-color2); width: auto; height: 300px; margin: 10px; padding: 10px;">
+            <div class="cluster-detail-sidebar" style="margin-bottom: 10px;">
+                Cluster List
+            </div>
+
+            <div id="cluster-chart" style="height: calc(100% - 25px); width: auto;">
+
+            </div>
+        </div>
+
+        <div style="min-height: 300px; background: var(--box-inner-color2); width: auto; height: calc(100% - 480px); margin: 10px; padding: 10px;">
+            <div class="cluster-detail-sidebar" style="margin-bottom: 10px;">
+                Node List
+            </div>
+
+            <div id="node-chart" style="height: calc(100% - 25px); width: auto;">
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    var clear_cluster_list = null;
+    var add_cluster = null
+    var select_cluster = null;
+    var clear_node_list = null;
+
+    var currnet_clusters = [];
+
+    function update_clusters_info(clusters_info) {
+
+        clear_cluster_list();
+        clear_node_list();
+
+        currnet_clusters.forEach(cluster_name => {
+
+
+            var cluster_info = clusters_info.find(c => c.cluster_name == cluster_name);
+
+            if(cluster_info) {
+                add_cluster(cluster_info);
+                select_cluster(cluster_info);
+            }
+
+        });
+    }
+
+    function ClusterDetail() {
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+              
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", minWidth: 140, flex: 1, pinned: "left"},
+                { field: "type", headerName: "Type", minWidth: 100, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "ip", headerName: "IP", minWidth: 120, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "nodes", headerName: "Nodes", width: 100, cellStyle: {textAlign: "center"} },
+                { field: "pods", headerName: "Pods", width: 100, cellStyle: {textAlign: "center"} },
+                { field: "services", headerName: "Services", width: 100, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true,
+            onRowClicked: function(event) {
+                //select_cluster(event.data);
+            },
+            rowSelection: {
+                mode: 'singleRow',
+                checkboxes: false,
+                headerCheckbox: false,
+                enableClickSelection: true,
+            }
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#cluster-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        clear_cluster_list = function _clear_cluster_list() {
+            gridApi.setGridOption("rowData", []);
+        }
+
+
+        add_cluster = function(cluster) {
+
+            var name = cluster.cluster_name;
+            var type = cluster.cluster_type;
+            var ip = cluster.cluster_ip;
+            var nodes = cluster.nodes.length;
+            var pods = cluster.pods.length;
+            var services = cluster.services.length;
+            
+            cluster.nodes.forEach(node => {
+                if(checkProperty(node.metadata.labels, 'node-role.kubernetes.io/control-plane')) {
+                    ip = node.status.addresses[0].address;
+                    return;
+                }
+            });
+
+            gridApi.applyTransaction({
+                add: [{name: name, type: type, ip: ip, nodes: nodes, pods: pods, services: services, cluster: cluster}]
+            });
+        }
+    }
+
+    function NodeDetail() {
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+               
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", width: 140, pinned: "left"},
+                { field: "type", headerName: "Type", width: 100, cellStyle: {textAlign: "center"} },
+                { field: "version", headerName: "Version", width: 100 },
+                { field: "ip", headerName: "IP", width: 130, cellStyle: {textAlign: "center"} },
+                { field: "os", headerName: "OS", width: 160, cellStyle: {textAlign: "center"} },
+                { field: "cpu", headerName: "CPU", cellRenderer: UsageRenderer, flex: 1, minWidth: 120 },
+                { field: "gpu", headerName: "GPU", cellRenderer: UsageRenderer, flex: 1, minWidth: 120 },
+                { field: "ram", headerName: "RAM", cellRenderer: UsageRenderer, flex: 1, minWidth: 120 },
+                { field: "pods", headerName: "Pods", width: 100, cellStyle: {textAlign: "center"} },
+                { field: "cluster", headerName: "Cluster", cellStyle: {textAlign: "center"} },
+                { field: "status", headerName: "Status", cellRenderer: StatusRenderer, width: 100 },
+                { field: "date", headerName: "Date", width: 170, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#node-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        clear_node_list = function() {
+            gridApi.setGridOption("rowData", []);
+        }
+
+        select_cluster = function(cluster) {
+
+            //const cluster = cluster_info.cluster;
+
+            const cluster_name = cluster.cluster_name;
+
+            var nodes = cluster.nodes;
+
+            //gridApi.setGridOption("rowData", []);
+
+            nodes.forEach(node => {
+
+                const name = node.metadata.name;
+
+                //console.log(node);
+
+                var type;
+                if("node-role.kubernetes.io/control-plane" in node.metadata.labels) {
+                    type = "Master";
+                }else{
+                    type = "Slave";
+                }
+
+
+
+                const version = node.status.nodeInfo.kubeletVersion;
+                const ip = node.status.addresses[0].address;
+                const os = node.status.nodeInfo.osImage;
+                const pods = cluster.pods.length;
+
+                const status = node.status.conditions[node.status.conditions.length - 1].type;
+
+                const create_timestamp = convertUTCToSeoul(node.metadata.creationTimestamp);
+
+                let a_cpu = 0.0;
+                let a_gpu = 1.0;
+                let a_ram = 0.0;
+
+                let u_cpu = 0.0;
+                let u_gpu = 0.0;
+                let u_ram = 0.0;
+
+
+                if (checkProperty(node, 'allocatable')) {
+
+                    if (checkProperty(node.allocatable, 'cpu')) {
+                        a_cpu = node.allocatable.cpu;
+                    }
+
+                    if (checkProperty(node.allocatable, 'nvidia.com/gpu')) {
+                        a_gpu = node.allocatable['nvidia.com/gpu'];
+                    }
+
+                    if (checkProperty(node.allocatable, 'memory')) {
+                        a_ram = node.allocatable.memory;
+                    }
+
+                    
+                }
+
+
+                if (checkProperty(node, 'requests')) {
+
+                    if (checkProperty(node.requests, 'cpu')) {
+                        u_cpu = node.requests.cpu;
+                    }
+
+                    if (checkProperty(node.requests, 'nvidia.com/gpu')) {
+                        u_gpu = node.requests['nvidia.com/gpu'];
+                    }
+
+                    if (checkProperty(node.requests, 'memory')) {
+                        u_ram = node.requests.memory;
+                    }
+
+                    
+                }
+
+                let cpu = 100.0 * u_cpu/a_cpu;
+                let gpu = 100.0 * u_gpu/a_gpu;
+                let ram = 100.0 * u_ram/a_ram;
+
+                cpu = Math.random() * 100;
+                gpu = Math.random() * 100;
+                ram = Math.random() * 100;
+
+                const newItems = [{ name: name, type: type, version: version, ip: ip, os: os, cpu: cpu, gpu: gpu, ram: ram, pods: pods, cluster: cluster_name, status: status, date: create_timestamp }];
+                gridApi.applyTransaction({
+                    add: newItems
+                });
+            });
+        }
+    }
+
+   
+
+    ClusterDetail();
+    NodeDetail();
+
+</script>
+
+<script>
+
+function update_user_info(user) {
+
+    set_current_user(user);
+
+    $("#user-info-name").text(user.username);
+    $("#user-info-name2").text(user.username);
+
+    $("#user-info-email").text(user.email);
+    $("#user-info-phone").text(user.phone);
+
+    if(user.user_type == "admin") {
+        $("#user-info-type").text("Super");
+    } else {
+        $("#user-info-type").text("Normal");
+    }
+
+    //$("#user-info-date").text(convertUTCToSeoul(user.created_at));
+
+
+    if(user.workspaces) {
+        $("#user-info-workspace").text(user.workspaces.join(", "));
+        get_clusters_info();
+    } else {
+        $("#user-info-workspace").text("None");
+    }
+
+
+    if(user.clusters != null) {
+        currnet_clusters = user.clusters;
+    }
+}
+
+function get_user_info() {
+    var token = localStorage.getItem("access_token");
+    var token_type = localStorage.getItem("token_type");
+
+    const url = "/users/me";
+
+    fetch(url,
+    {
+        method: "GET",
+        headers: {
+            "Authorization": token_type+" " + token
+        }
+    })
+    .then(response => response.json())
+    .then(data =>{
+        update_user_info(data);
+
+    }).catch((error) => {
+        console.log(error);
+        clear_local_storage();
+    });
+}
+
+get_user_info();
+</script>

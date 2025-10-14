@@ -1,0 +1,415 @@
+<div class="cluster-container">
+    <div class="cluster-info-top" style="background-image: url(static/images/bg-t-r.png); background-position: right top; background-repeat: no-repeat;">
+        <div class="cluster-header">
+            <img src="static/images/service-m.png" width="40px" height="40px" alt="cluster_info" class="cluster-header-icon"> <span class="cluster-header-title">K-Service</span>
+        </div>
+        
+        <div style="background: var(--box-inner-color2); width: auto; height: 100%; margin: 10px; padding: 10px;
+        display: flex; flex-direction: column;">
+            <div class="cluster-detail-sidebar">
+                Service List
+            </div>
+            <div style="display: flex;  flex-direction: column; margin-bottom: 10px; margin-top: 10px;">
+                <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                    <div style="width: 200px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center;">
+                        <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;"> 
+                            <img src="static/images/workspace-w.png" alt="node"><span>Workspace</span> 
+                        </div>
+                            
+                        <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                        padding-left: 10px;">
+                            <select name="workspace_names" id="workspace_names" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"
+                            onchange="onWorkspaceNameChanged();">
+                                <option value="*">All</option>
+                                <option value="workspace7">workspace7</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="width: 200px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center;margin-left: 10px;">
+                        <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;"> 
+                            <img src="static/images/project-w.png" alt="node"><span>Project</span> 
+                        </div>
+                            
+                        <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                        padding-left: 10px;">
+                            <select name="project_names" id="project_names" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"
+                            onchange="onProjectNameChanged();">
+                                <option value="*">All</option>
+                                <option value="project1">project1</option>
+                                <option value="project2">project2</option>
+                                <option value="project3">project3</option>
+                                <option value="project4">project4</option>
+                                <option value="project5">project5</option>
+                                <option value="project6">project6</option>
+                                <option value="project7">project7</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="width: 200px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center;margin-left: 10px;">
+                        <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;"> 
+                            <img src="static/images/cluster-w.png" alt="node"><span>Cluster</span> 
+                        </div>
+                            
+                        <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                        padding-left: 10px;">
+                            <select name="cluster_names" id="cluster_names" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"
+                            onchange="onClusterNameChanged();">
+                                <option value="*">All</option>
+                                <option value="edge">edge</option>
+                                <option value="zento">zento</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                    <div style="border-radius: 3px; background: #00B050; width: 90px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px;cursor: pointer;" onclick="onCreate_Service()">
+                        <i class="fas fa-plus" style="margin-right: 5px;"></i> <span style="color: #fff; font-size: 14px; font-weight: 600;">Create</span>
+                    </div>
+                    <div style="border-radius: 3px; background: #D30F0F;; width: 90px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px;cursor: pointer;" onclick="onDelete_Service()">
+                        <i class="fas fa-trash" style="margin-right: 5px;"></i> <span style="color: #fff; font-size: 14px; font-weight: 600;">Delete</span>
+                    </div>
+                    <div style="width: 400px; height: 40px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center; padding-left: 10px;">
+                        <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;padding-right: 10px;"> 
+                            <i class="fas fa-search" style="margin-right: 5px;"></i><span>Search</span> 
+                        </div>
+                        <input type="text" id="filter-text-box" placeholder="Search..." oninput="onFilterTextBoxChanged()" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;">
+                    </div>
+                </div>
+                
+            </div>
+            <div id="service-chart" style="height: 100%; width: auto;">
+
+            </div>
+        </div>
+        
+    </div>
+</div>
+<script>
+
+    var onFilterTextBoxChanged = null;
+    var onClusterNameChanged = null;
+    var onProjectNameChanged = null;
+    var onWorkspaceNameChanged = null;
+    var onSelectClusterChanged = null;
+
+
+    var get_selected_pod_labels = null;
+    var onDelete_Service = null;
+    
+
+    function ServceDetail() {
+
+        let cluster_name = "*";
+        let project_name = "*";
+        let workspace_name = "*";
+
+
+        let owner_pods = [];
+
+
+        function cluster_valid(node) {
+
+            if (cluster_name === "*") {
+                return true;
+            }else if (node.data.cluster === cluster_name) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function project_valid(node) {
+            if (project_name === "*") {
+                return true;
+            }else if (node.data.project === project_name) {
+                return true;
+            }
+
+            return false;
+        }
+
+        function workspace_valid(node) {
+            if (workspace_name === "*") {
+                return true;
+            }else if (node.data.workspace === workspace_name) {
+                return true;
+            }
+
+            return false;
+        }
+                
+        function doesExternalFilterPass(node) {
+
+            if (cluster_name === "*" && project_name === "*" && workspace_name === "*") {
+                return true;
+            }else if(cluster_valid(node) && project_valid(node) && workspace_valid(node)) {
+                return true;
+            }
+            return false;
+        }
+
+    
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+               
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", minWidth: 150, flex: 1, pinned: "left", cellRenderer: ServiceNameTypeRenderer},
+                { field: "workspace", headerName: "Workspace", minWidth: 120, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "project", headerName: "project", minWidth: 120, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "cluster", headerName: "Cluster", minWidth: 120, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "type", headerName: "Type", width: 100, cellStyle: {textAlign: "center"} },
+                { field: "clusterip", headerName: "ClusterIP", width: 150, cellStyle: {textAlign: "center"} },
+                { field: "port", headerName: "Port", width: 100, cellStyle: {textAlign: "center"} },
+                { field: "date", headerName: "Date", width: 180, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true,
+            onRowClicked: function(event) {
+                
+            },
+            rowSelection: {
+                mode: 'singleRow',
+                checkboxes: false,
+                headerCheckbox: false,
+                enableClickSelection: true,
+            },
+            isExternalFilterPresent: isExternalFilterPresent,
+            doesExternalFilterPass: doesExternalFilterPass
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#service-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function isExternalFilterPresent() {
+            return cluster_name !== "*" || project_name !== "*" || workspace_name !== "*";
+        }
+
+        function _onFilterTextBoxChanged() {
+            gridApi.setGridOption(
+                "quickFilterText",
+                document.getElementById("filter-text-box").value,
+            );
+        }
+
+        function _onClusterNameChanged() {
+            cluster_name = document.getElementById("cluster_names").value;
+            gridApi.onFilterChanged();
+        }
+
+        function _onProjectNameChanged() {
+            project_name = document.getElementById("project_names").value;
+            gridApi.onFilterChanged();
+        }
+
+        function _onWorkspaceNameChanged() {
+            workspace_name = document.getElementById("workspace_names").value;
+            gridApi.onFilterChanged();
+        }
+
+        update_clusters_info = function(clusters_info) {
+
+            $("#cluster_names").empty();
+            $("#cluster_names").append("<option value='*'>All</option>");
+
+            $("#select-cluster").empty();
+            
+
+
+            gridApi.setGridOption("rowData", []);
+
+            const current_user = get_current_user();
+            owner_pods = [];
+
+
+            clusters_info.forEach(cluster => {
+
+                const cluster_name = cluster.cluster_name;
+
+                var ip = cluster.cluster_ip;
+
+                cluster.nodes.forEach(node => {
+                    if(checkProperty(node.metadata.labels, 'node-role.kubernetes.io/control-plane')) {
+                        ip = node.status.addresses[0].address;
+                        return;
+                    }
+                });
+
+                $("#cluster_names").append("<option value='"+cluster_name+"'>"+cluster_name+"</option>");
+
+                $("#select-cluster").append("<option value='"+cluster_name+"'>"+cluster_name+"</option>");
+
+                if(checkProperty(cluster, "services")) {
+
+                    cluster.services.forEach(service => {
+
+                        if(current_user.username == service.metadata.namespace) {
+
+                            const workspace = checkProperty(service.metadata, "annotations") && checkProperty(service.metadata.annotations, "workspace") ? service.metadata.annotations.workspace : "";
+                            const project = checkProperty(service.metadata, "annotations") && checkProperty(service.metadata.annotations, "project") ? service.metadata.annotations.project : "";
+                            const date = convertUTCToSeoul(service.metadata.creationTimestamp);
+                            const type = service.spec.type;
+                            const clusterip = service.spec.clusterIP;
+                            var port = service.spec.ports[0].port;
+
+                            var url = "";
+
+         
+
+                            if(type == 'NodePort') {
+                                port += ":" + service.spec.ports[0].nodePort;
+                                url = "http://" + ip + ":" + service.spec.ports[0].nodePort;
+                            }
+
+                 
+
+                            const newItems = [{ name: service.metadata.name, workspace: workspace, project: project, cluster: cluster_name, type: type, clusterip: clusterip, port: port, date: date, url: url }];
+
+                            const res = gridApi.applyTransaction({
+                                add: newItems
+                            });
+                        }
+                    });
+                
+                }
+
+                if(checkProperty(cluster, "pods")) {
+
+                    
+
+                    cluster.pods.forEach(pod => {
+
+                        if(current_user.username == pod.metadata.namespace) {
+                            pod.cluster = cluster_name;
+                            owner_pods.push(pod);
+                           
+                        }
+                    });
+                }
+
+            });
+
+            onSelectClusterChanged();
+        }
+
+        onSelectClusterChanged = function() {
+            const cluster_name = $("#select-cluster").val();
+            $("#select-pod").empty();
+
+            owner_pods.forEach(pod => {
+                if(pod.cluster == cluster_name) {
+                    $("#select-pod").append("<option value='"+pod.metadata.name+"'>"+pod.metadata.name+"</option>");
+                }
+            });
+        }
+
+
+        get_selected_pod_labels = function() {
+            const pod_name = $("#select-pod").val();
+            const pod = owner_pods.find(pod => pod.metadata.name == pod_name);
+            return pod.metadata.labels;
+        }
+
+
+        onDelete_Service = function() {
+            const current_user = get_current_user();
+
+            if(gridApi.getSelectedRows().length == 0) {
+                alert("Please select a service to delete.");
+                return;
+            }
+
+            if(confirm("Are you sure you want to delete this service?")) {     
+                gridApi.getSelectedRows().forEach(row => {
+                    const request_data = {
+                        "target_cluster": row.cluster,
+                        "resource" : "service",
+                        "method" : "delete",
+                        "namespace" : current_user.username,
+                        "data" : row.name
+                    }
+                    
+                    zfetch("/request_simple", "POST", request_data).then(data => {
+
+                        const r = check_status(data);
+
+                        if(r) {
+                            gridApi.applyTransaction({
+                                remove: [row]
+                            });
+                        }
+                    });
+
+                });
+            }
+        }
+
+        
+
+        onFilterTextBoxChanged = _onFilterTextBoxChanged;
+        onClusterNameChanged = _onClusterNameChanged;
+        onProjectNameChanged = _onProjectNameChanged;
+        onWorkspaceNameChanged = _onWorkspaceNameChanged;
+    }
+
+    ServceDetail();
+
+
+
+</script>
+
+
+
+<script>
+
+
+
+function get_project_list() {
+
+
+    get_projects(get_current_user().username, (data) => {
+        user_projects = data;
+        var options = "";
+
+        options += "<option value='*'>All</option>";
+
+        for(var i = 0; i < data.length; i++) {
+            options += "<option value='" + data[i].name + "'>" + data[i].name + "</option>";
+        }        
+
+        $("#project_names").html(options);
+    });
+}
+
+function get_workspace_list() {
+    zfetch("/workspaces/as_user/" + get_current_user().username, "GET", null).then(data => {
+        var options = "";
+
+        options += "<option value='*'>All</option>";
+
+        for(var i = 0; i < data.length; i++) {
+            options += "<option value='" + data[i].name + "'>" + data[i].name + "</option>";
+        }        
+
+        $("#workspace_names").html(options);
+    });
+}
+
+
+
+
+get_project_list();
+get_workspace_list();
+get_clusters_info();
+
+
+</script>

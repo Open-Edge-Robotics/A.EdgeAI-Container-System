@@ -1,0 +1,257 @@
+<div  style="width: 100%;height: 100%; background: url(static/images/dashbaord_bg.png) no-repeat center center;">
+    <div style="height: 100%; display: flex; flex-direction: row; width: 100%;">
+       <div style="flex:2; height: 100%;">
+            <div style="padding-top: 100px; padding-left: 40px; width: 100%; height: calc(100% - 220px);min-height: 400px;">
+                <div style="background-image: url(static/images/cluster_info.png); background-repeat: no-repeat; background-size: 400px; width: 100%; height: 100%;"></div>
+            </div>
+            <div style="display: flex; flex-direction: row; height: 200px; margin-top: auto; margin-left: 10px; margin-right: 10px;
+                 width: auto; min-width: 700px;">
+                <div class="dashboard-info-box2">
+                    <img src="static/images/cluster_icon.png" alt="ROS Node Icon">
+                    <span>Cluster</span>
+                    <span id="cluster-count">0</span>
+                </div>
+                <div class="dashboard-info-box2">
+                    <img src="static/images/user_icon.png" alt="ROS Node Icon">
+                    <span>User</span>
+                    <span>0</span>
+                </div>
+                <div class="dashboard-info-box2">
+                    <img src="static/images/workspaces_icon.png" alt="ROS Node Icon">
+                    <span>Workspaces</span>
+                    <span>0</span>
+                </div>
+                <div class="dashboard-info-box2">
+                    <img src="static/images/projects_icon.png"alt="ROS Node Icon">
+                    <span>Projects</span>
+                    <span>0</span>
+                </div>
+            </div>
+       </div>
+       <div style="flex:1; height: 100%;">
+            <div style="margin-left: 10px; margin-top: 10px; font-size: 18px; font-weight: 700;">ROS</div>
+            <div style="display: flex; flex-direction: row;">
+                
+                <div class="dashboard-info-box ros-info-box">
+                    <div>
+                        <span class="ros-info-box-num">01</span>
+                        
+                    </div>
+                    <div class="ros-info-image">
+                        <img src="static/images/r_node_icon.png" width="70px" height="70px" alt="ROS Node Icon">
+                        <span id="ros-info-node-count">0</span>
+                        <span>Node</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-info-box ros-info-box">
+                    <div>
+                        <span class="ros-info-box-num">02</span>
+                        
+                    </div>
+                    <div class="ros-info-image">
+                        <img src="static/images/r_topic_icon.png" width="70px" height="70px" alt="ROS Node Icon">
+                        <span id="ros-info-topic-count">0</span>
+                        <span>Topic</span>
+                    </div>
+                       
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: row;">
+                
+                <div class="dashboard-info-box ros-info-box">
+                    <div>
+                        <span class="ros-info-box-num">03</span>
+                        
+                    </div>
+                    <div class="ros-info-image">
+                        <img src="static/images/r_action_icon.png" width="70px" height="70px" alt="ROS Node Icon">
+                        <span id="ros-info-action-count">0</span>
+                        <span>Action</span>
+                    
+                    </div>
+                </div>
+                
+                <div class="dashboard-info-box ros-info-box">
+                    <div>
+                        <span class="ros-info-box-num">04</span>
+                        
+                    </div>
+                    <div class="ros-info-image">
+                        <img src="static/images/r_service_icon.png" width="70px" height="70px" alt="ROS Node Icon">
+                        <span id="ros-info-service-count">0</span>
+                        <span>Service</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-left: 10px; margin-top: 10px;font-size: 18px; font-weight: 700;">Bridge</div>
+            <div style="display: flex; flex-direction: row;">
+                
+                <div class="dashboard-info-box" style="width: 100%; display: flex; flex-direction: row;">
+                    <div style="flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center;">
+                        <img src="static/images/r_agent_icon.png" width="70px" height="70px" alt="ROS Node Icon">
+                        <span id="bridge-info-agent-count">0</span>
+                        <span>Agent</span>
+                    </div>
+                    <div style="flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center;">
+                        <img src="static/images/r_topic_icon.png" width="70px" height="70px" alt="ROS Node Icon">
+                        <span id="bridge-info-topic-count">0</span>
+                        <span>Topic</span>
+                    </div>
+                    <div style="flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center;">
+                        <img src="static/images/r_pps_icon.png" width="70px" height="70px" alt="ROS Node Icon">
+                        <span>1220</span>
+                        <span>PPS</span>
+                    </div>
+                    <div style="flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center;">
+                        <div style="width:70px; height: 70px; display: flex; align-items: center; justify-content: center;">
+                            <img src="static/images/r_bps_icon.png" width="50px" height="50px" alt="ROS Node Icon">
+                        </div>
+                       
+                        <span>3212</span>
+                        <span>BPS</span>
+                    </div>
+                </div>
+            </div>
+            <div style="background: var(--box-inner-color); height: calc(100% - 510px); margin-top: 10px; margin-left: 10px; margin-right: 10px;">
+                <canvas id="myChart"></canvas>
+            </div>
+                
+       </div>
+       
+    </div>
+
+</div>
+
+<script>
+
+function update_chart() {
+    var ctx = document.getElementById('myChart');
+
+    // Get current time
+    let now = new Date();
+    
+    // Create array of 20 timestamps, each 0.5 seconds apart going backwards
+    let timestamps = Array.from({length: 20}, (_, i) => {
+        let time = new Date(now - (19-i) * 500); // 500ms = 0.5s
+        return time.toLocaleTimeString('en-US', { 
+            hour12: false,
+            minute:'2-digit', 
+            second:'2-digit'
+        });
+    });
+
+
+    new Chart(ctx, {
+    type: 'line',
+    data: {
+    labels: timestamps,
+      datasets: [{
+        label: 'PPS',
+        data: [1220, 1235, 1245, 1260, 1275, 1290, 1285, 1270, 1255, 1240, 1225, 1210, 1225, 1240, 1255, 1270, 1285, 1290, 1275, 1260],
+        borderWidth: 1,
+        borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: [
+        'rgba(75, 192, 192, 0.2)'
+        ],
+        pointBackgroundColor : 'rgba(75, 192, 192, 0.3)',
+      },{
+        label: 'BPS',
+        data: [3245, 3267, 3289, 3312, 3334, 3356, 3378, 3356, 3334, 3312, 3289, 3267, 3245, 3267, 3289, 3312, 3334, 3356, 3378, 3356],
+        borderWidth: 1,
+        borderColor: 'rgb(255, 205, 86)',
+        backgroundColor: [
+        'rgba(2255, 205, 86, 0.2)'
+        ],
+        pointBackgroundColor : 'rgba(255, 205, 86, 0.3)',
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          min: 0,
+          max: 10000,
+          grid: {
+            color: 'rgba(255,255,255,0.2)',
+          },
+          ticks: {
+            color: 'rgba(255,255,255,1)',
+          }
+        },
+        x: {
+          grid: {
+            color: 'rgba(255,255,255,0.2',
+          },
+          ticks: {
+            color: 'rgba(255,255,255,1)',
+          }
+        }
+      },
+      maintainAspectRatio: false,
+    }
+  });
+}
+
+
+update_chart();
+</script>
+
+<script>
+
+
+function update_clusters_info(clusters_info) {
+
+    $("#cluster-count").text(clusters_info.length);
+
+}
+    
+function update_ros_info_data(ros_info) {
+
+    var node_count = 0;
+    var topic_count = 0;
+    var action_count = 0;
+    var service_count = 0;
+    var agent_count = 0;
+    var publisher_count = 0;
+    var subscriber_count = 0;
+
+
+    for(const ros_info_cluster in ros_info) {
+        const ros_info_cluster_data = ros_info[ros_info_cluster];
+
+        node_count += ros_info_cluster_data.node.length;
+        topic_count += ros_info_cluster_data.topics.length;
+        action_count += ros_info_cluster_data.actions.length;
+        service_count += ros_info_cluster_data.services.length;
+
+        publisher_count = ros_info_cluster_data.publishers.length;
+        subscriber_count = ros_info_cluster_data.subscribers.length;
+
+        agent_count++;
+    }
+
+    $("#ros-info-node-count").text(node_count);
+    $("#ros-info-topic-count").text(publisher_count+subscriber_count);
+    $("#ros-info-action-count").text(action_count);
+    $("#ros-info-service-count").text(service_count);
+    $("#bridge-info-agent-count").text(agent_count);
+    $("#bridge-info-topic-count").text(publisher_count+subscriber_count);
+}
+
+function update_ros_info() {
+    get_ros_info().then(data => {
+        ros_info = data;
+        update_ros_info_data(ros_info);
+    });
+}
+
+
+update_ros_info();
+get_clusters_info();
+
+
+
+    
+</script>

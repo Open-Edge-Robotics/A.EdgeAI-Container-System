@@ -1,0 +1,103 @@
+<div class="cluster-container">
+    <div class="cluster-info-top" style="background-image: url(static/images/bg-t-r.png); background-position: right top; background-repeat: no-repeat;">
+        <div class="cluster-header">
+            <img src="static/images/project-m.png" width="40px" height="40px" alt="cluster_info" class="cluster-header-icon"> <span class="cluster-header-title">Project</span>
+        </div>
+        
+
+        <div style="background: var(--box-inner-color2); width: auto; height: 100%; margin: 10px; padding: 10px; min-height: 250px;
+        display: flex; flex-direction: column;">
+            <div class="cluster-detail-sidebar" style="margin-bottom: 10px;">
+                Project List
+            </div>
+            <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                <div style="width: 400px; height: 40px; background: var(--box-inner-color); 
+                    display: flex;  flex-direction: row; align-items: center; padding-left: 10px;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;padding-right: 10px;"> 
+                        <i class="fas fa-search" style="margin-right: 5px;"></i><span>Search</span> 
+                    </div>
+                    <input type="text" id="filter-text-box" placeholder="Search..." oninput="onFilterTextBoxChanged()" 
+                    style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"/>
+                </div>
+                
+            </div>
+            <div id="project-chart" style="height: 100%; width: auto;">
+
+            </div>
+        </div>
+        
+    </div>
+</div>
+<script>
+
+
+    var onFilterTextBoxChanged = null;
+    var onProjectListChanged = null;
+
+    function ProjectDetail() {
+
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+                
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", width: 150, pinned: "left"},
+                { field: "user", headerName: "User", width: 100, cellStyle: {textAlign: "center"}},
+                { field: "workspace", headerName: "Workspace", width: 120, cellStyle: {textAlign: "center"}},
+                { field: "clusters", headerName: "Clusters", minWidth: 200, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "date", headerName: "Date", width: 170, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#project-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function _onFilterTextBoxChanged() {
+            gridApi.setGridOption(
+                "quickFilterText",
+                document.getElementById("filter-text-box").value,
+            );
+        }
+
+        onProjectListChanged = function(projects) {
+            gridApi.setGridOption("rowData", []);
+
+            projects.forEach(project => {
+                const name = project.name;
+                const user = project.username;
+                const workspace = project.workspace_name;
+                const clusters = project.clusters.join(", ");
+                const date = convertUTCToSeoul(project.updated_at);
+
+                const newItems = [{name: name, user: user, workspace: workspace, clusters: clusters, date: date}];
+                gridApi.applyTransaction({add: newItems});
+            });
+        }
+
+        
+        onFilterTextBoxChanged = _onFilterTextBoxChanged;
+
+    }
+
+    function get_projects_info() {
+
+        const user = get_current_user();
+
+        zfetch("/projects/", "GET", null).then(data => {
+            onProjectListChanged(data);
+        });
+    }
+
+
+    ProjectDetail();
+
+    get_projects_info();
+
+    
+
+</script>

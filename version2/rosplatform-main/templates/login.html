@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDGE Server</title>
+    <link rel="shortcut icon" href="">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+
+    <script src="static/js/jquery-3.7.1.min.js"></script>
+    <script src="static/js/ag-grid-community.min.js"></script>
+    <script src="static/js/chart.js"></script>
+    <script src="static/js/main.js"></script>
+    <script src="static/js/ag-grid-extra.js"></script>
+
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/all.min.css" rel="stylesheet">
+    <link href="static/css/main.css" rel="stylesheet">
+    <link href="static/css/timer.css" rel="stylesheet">
+    <link href="static/css/paperlogy.css" rel="stylesheet" />
+    <link href="static/css/ag-grid.css" rel="stylesheet" />
+</head>
+<body style="background: url('static/images/login_bg.png'); height: 100vh; width: 100vw;">
+
+    <div style="width: 100%; height: 100%; display: flex; flex-direction: row; align-items: center; justify-content: center;
+       min-height: 600px;">
+        <div style="padding: 20px; width: 500px;height: 440px;border-radius: 5px; background: #151515; box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.25); ">
+            <div style="margin-top: 20px;width: 100%; justify-content: center;display: flex; flex-direction: row; align-items: center;"><img src="static/images/logo2.png" alt="logo" style="width: 150px; "></div>
+            <div style="padding-left: 20px;margin-top: 20px;width: 100%; justify-content: left;display: flex; flex-direction: row; align-items: center; background: #1C1C1C; height: 40px;">
+               <span style="color: #00B050; font-size: 14px;">PAGE</span> <div style="width: 1px; height: 10px; background: #c9c9c9; margin: 0 10px;"></div> <span style="color: #fff; font-size: 14px;">LOGIN</span>
+            </div>
+            <div style="margin-top: 20px;">ID</div>
+            <div style="margin-top: 5px;width: 100%; justify-content: left;display: flex; flex-direction: row; align-items: center; background: #1C1C1C; height: 40px;border-radius: 10px; border: 1px solid #363636;">
+                <input id="id" type="text" style="outline: none; padding: 5px; width: 100%; background: transparent; border: 0; color: #fff; font-size: 14px;" placeholder="Please enter your ID">
+            </div>
+            <div style="margin-top: 20px;">Password</div>
+            <div style="margin-top: 5px;width: 100%; justify-content: left;display: flex; flex-direction: row; align-items: center; background: #1C1C1C; height: 40px;border-radius: 10px; border: 1px solid #363636;">
+                <input id="password" type="password" style="outline: none; padding: 5px; width: 100%; background: transparent; border: 0; color: #fff; font-size: 14px;" placeholder="Please enter your password" onkeyup="if(event.keyCode == 13) { login(); }">
+            </div>
+
+            <div id="login-button" style="cursor: pointer; margin-top: 35px;width: 100%; justify-content: center;display: flex; flex-direction: row; align-items: center; background: #00B050; height: 40px;border-radius: 5px;">
+                Login
+            </div>
+
+            <div style="cursor: pointer; margin-top: 5px;width: 100%; justify-content: center;display: flex; flex-direction: row; align-items: center; background: #1C1C1C; height: 40px;border-radius: 5px;">
+               Sign Up
+            </div>
+        </div>
+        <div style="margin-left: 20px; width: 250px;height: 440px;border-radius: 5px; background: #151515; box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.25);
+        display: flex; flex-direction: column; align-items: center; justify-content: center;padding: 20px;">
+            <span style="font-size: 30px;font-weight: 900;width: 100%;margin-bottom: 10px;">
+                슬로건이 들어갈 공간입니다. 적절한 문구를 입력해주세요
+            </span>
+            <span style="color: #676767;font-size: 14px;font-weight: 500;width: 100%;">
+                Griffin Edge 에 대한 설명이 들어갈 공간입니다.
+            </span>
+            <span style="color: #676767;font-size: 14px;font-weight: 500;width: 100%;">
+                세네줄정도 소개를 적어주세요. 최대 다섯줄까지 가능합니다.
+            </span>
+        </div>
+    </div>
+    <script>
+        $("#login-button").click(function() {
+                login();
+        });
+
+        function login() {
+            var id = $("#id").val();
+            var password = $("#password").val();
+            $.ajax({
+                url: "/token",
+                type: "POST",
+                data: { username: id, password: password },
+                success: function(response) {
+                    localStorage.setItem("access_token", response.access_token);
+                    localStorage.setItem("token_type", response.token_type);
+                    localStorage.setItem("user_id", id);
+                    localStorage.setItem("user_type", response.user_type);
+                    
+                    if(response.user_type == "admin") {
+                        window.location.href = "/platform_page";
+                    } else {
+                        window.location.href = "/project_page";
+                    }
+                },
+                error: function(error) {
+                    localStorage.removeItem("access_token");
+                    localStorage.removeItem("token_type");
+                    localStorage.removeItem("user_id");
+                    localStorage.removeItem("user_type");
+                    alert("로그인 실패");
+                }
+            });
+        }
+    </script>
+
+</body>
+</html> 

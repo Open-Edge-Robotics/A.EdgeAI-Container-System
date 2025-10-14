@@ -1,0 +1,472 @@
+<div class="cluster-container">
+    <div class="cluster-info-top" style="background-image: url(static/images/bg-t-r.png); background-position: right top; background-repeat: no-repeat;">
+        <div class="cluster-header">
+            <img src="static/images/cluster-m-cluster.png" alt="cluster_info" class="cluster-header-icon"> <span class="cluster-header-title">Cluster</span>
+        </div>
+        <div class="cluster-info-section">
+            <div class="cluster-info-box">
+                <img src="static/images/cluster-m-cluster.png" alt="ROS Node Icon">
+                <span>Cluster</span>
+                <span id="cluster-count" style="margin-left: auto;">2</span>
+            </div>
+            <div class="cluster-info-box">
+                <img src="static/images/cluster-m-user.png" alt="ROS Node Icon">
+                <span>User</span>
+                <span style="margin-left: auto;">2</span>
+            </div>
+            <div class="cluster-info-box">
+                <img src="static/images/cluster-m-workspaces.png"  alt="ROS Node Icon">
+                <span>Workspaces</span>
+                <span style="margin-left: auto;">2</span>
+            </div>
+            <div class="cluster-info-box">
+                <img src="static/images/cluster-m-projects.png"  alt="ROS Node Icon">
+                <span>Projects</span>
+                <span style="margin-left: auto;">2</span>
+            </div>
+        </div>
+        <div class="cluster-main-content">
+            <div class="cluster-content-wrapper">
+                <div class="cluster-content-title">
+                    <span class="cluster-content-title-text">Cluster</span>
+                </div>
+                <div class="cluster-content-layout">
+                    <div class="cluster-list-panel">
+                        <div>
+                            <span class="cluster-list-title">List</span>
+                        </div>
+                        <div id="cluster-list" style="width: 100%; height: 100%;">
+                            <div class="cluster-list-item">
+                                <div class="cluster-list-item-icon" style="display: flex; align-items: center; justify-content: center;"><img src="static/images/s_cluster_icon.png" alt="ros"></div>
+                                <div class="cluster-list-item-name">Ms-master</div>
+                                <div class="cluster-list-item-actions">...</div>
+                            </div>
+
+                            <div class="cluster-list-item">
+                                <div class="cluster-list-item-icon" style="display: flex; align-items: center; justify-content: center;"><img src="static/images/s_cluster_icon.png" alt="ros"></div>
+                                <div class="cluster-list-item-name">Ms-master</div>
+                                <div class="cluster-list-item-actions">...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cluster-detail-panel cluster-detail-layout">
+                        <div class="cluster-detail-main" id="cluster-detail-main">
+
+                            <div class="cluster-detail-content">
+
+                                <div class="cluster-detail-icon-section">
+                                    <img src="static/images/cluster-cluster.png" alt="ros">
+                                </div>
+                                <div class="cluster-detail-info-section">
+                                    <div><span class="cluster-detail-title">Cluster</span></div>
+                                    <div><span id="cluster-detail-name" class="cluster-detail-name">Ms-master</span></div>
+                                    <div class="cluster-detail-info-row">
+                                        <div class="cluster-detail-info-label">Type</div> 
+                                        <div id="cluster-detail-type" class="cluster-detail-info-value">Baremetal</div>
+                                    </div>
+                                    <div class="cluster-detail-info-row">
+                                        <div class="cluster-detail-info-label">Node</div> 
+                                        <div id="cluster-detail-node-count" class="cluster-detail-info-value">2</div>
+                                    </div>
+                                    <div class="cluster-detail-info-row">
+                                        <div class="cluster-detail-info-label">Compute</div> 
+                                        <div class="cluster-detail-info-link" onclick="openGrafana()">Details</div>
+                                    </div>
+                                    <div class="cluster-detail-info-row">
+                                        <div class="cluster-detail-info-label">Updated</div> 
+                                        <div id="cluster-detail-updated" class="cluster-detail-info-value"></div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="cluster-detail-stats">
+                                <div class="cluster-stat-box">
+                                    <div><span id="cluster-detail-pod-count2" class="cluster-stat-number">2</span></div>
+                                    <div class="cluster-stat-item">
+                                        <img src="static/images/s_pod.png" alt="ros"> 
+                                        <span class="cluster-stat-label">Pod</span>
+                                    </div>
+                                </div>
+                                <div class="cluster-stat-box">
+                                    <div><span id="cluster-detail-node-count2" class="cluster-stat-number">43</span></div>
+                                    <div class="cluster-stat-item">
+                                        <img src="static/images/s_node.png" alt="ros"> 
+                                        <span class="cluster-stat-label">Node</span>
+                                    </div>
+                                </div>
+                                <div class="cluster-stat-box">
+                                    <div><span id="cluster-detail-topic-count" class="cluster-stat-number">0</span></div>
+                                    <div class="cluster-stat-item">
+                                        <img src="static/images/s_service.png" alt="ros"> 
+                                        <span class="cluster-stat-label-green">Topic</span>
+                                    </div>
+                                </div>
+                                <div class="cluster-stat-box">
+                                    <div><span id="cluster-detail-service-count" class="cluster-stat-number">0</span></div>
+                                    <div class="cluster-stat-item">
+                                        <img src="static/images/s_service.png" alt="ros"> 
+                                        <span class="cluster-stat-label-green">Service</span>
+                                    </div>
+                                </div>
+                                <div class="cluster-stat-box">
+                                    <div><span id="cluster-detail-action-count" class="cluster-stat-number">0</span></div>
+                                    <div class="cluster-stat-item">
+                                        <img src="static/images/s_action.png" alt="ros"> 
+                                        <span class="cluster-stat-label-green">Action</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cluster-detail-main" id="node-detail-main" style="display: none;">
+
+                            <div class="cluster-detail-content">
+
+                                <div class="cluster-detail-icon-section">
+                                    <img src="static/images/cluster-node.png" alt="ros">
+                                </div>
+                                <div class="cluster-detail-info-section">
+                                    <div><span class="cluster-detail-title">Node</span></div>
+                                    <div><span id="node-detail-name" class="cluster-detail-name">Ms-master</span></div>
+                                    <div class="cluster-detail-info-row">
+                                        <div class="cluster-detail-info-label">Type</div> 
+                                        <div id="node-detail-node-type" class="cluster-detail-info-value">Master Node</div>
+                                    </div>
+                                    <div class="cluster-detail-info-row">
+                                        <div class="cluster-detail-info-label">InternalIP</div> 
+                                        <div id="node-detail-internal-ip" class="cluster-detail-info-value">172.16.11.151</div>
+                                    </div>
+                                    <div class="cluster-detail-info-row">
+                                        <div class="cluster-detail-info-label">Compute</div> 
+                                        <div class="cluster-detail-info-link" onclick="openGrafana()">Details</div>
+                                    </div>
+                                    <div class="cluster-detail-info-row">
+                                        <div class="cluster-detail-info-label">Created</div> 
+                                        <div id="node-detail-created" class="cluster-detail-info-value"></div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="cluster-detail-stats">
+                                <div class="cluster-stat-box">
+                                    <div><span class="cluster-stat-number">2</span></div>
+                                    <div class="cluster-stat-item">
+                                        <img src="static/images/s_pod.png" alt="ros"> 
+                                        <span class="cluster-stat-label">Pod</span>
+                                    </div>
+                                </div>
+                                <div class="cluster-stat-box">
+                                    <div><span class="cluster-stat-number">10</span></div>
+                                    <div class="cluster-stat-item">
+                                        <img src="static/images/s_r_node.png" alt="ros"> 
+                                        <span class="cluster-stat-label" style="color: #00B050;">Node</span>
+                                    </div>
+                                </div>
+                                <div class="cluster-stat-box" style="background-color: #151515;">
+                                   
+                                </div>
+                                <div class="cluster-stat-box" style="background-color: #151515;">
+                                   
+                                </div>
+                                <div class="cluster-stat-box" style="background-color: #151515;">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cluster-detail-sidebar" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div class="base-timer">
+                                <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                  <g class="base-timer__circle" transform="rotate(-90, 50, 50)">
+                                    <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
+                                    <path
+                                      id="gpu-usage"
+                                      stroke-dasharray="20 283"
+                                      class="base-timer__path-remaining green"
+                                      d="
+                                        M 50, 50
+                                        m -45, 0
+                                        a 45,45 0 1,0 90,0
+                                        a 45,45 0 1,0 -90,0
+                                      "
+                                    ></path>
+                                  </g>
+                                </svg>
+                                <span class="base-timer__label">
+                                    GPU
+                                </span>
+                                <span id="gpu-usage-label" class="base-timer__label2">
+                                    74.12%
+                                </span>
+                              </div>
+                              <div class="base-timer">
+                                <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                  <g class="base-timer__circle" transform="rotate(-90, 50, 50)">
+                                    <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
+                                    <path
+                                      id="cpu-usage"
+                                      stroke-dasharray="20 283"
+                                      class="base-timer__path-remaining yellow"
+                                      d="
+                                        M 50, 50
+                                        m -45, 0
+                                        a 45,45 0 1,0 90,0
+                                        a 45,45 0 1,0 -90,0
+                                      "
+                                    ></path>
+                                  </g>
+                                </svg>
+                                <span class="base-timer__label" style="color: #AFD30F;">
+                                    CPU
+                                </span>
+                                <span id="cpu-usage-label" class="base-timer__label2">
+                                    74.12%
+                                </span>
+                              </div>
+
+                              <div class="base-timer">
+                                <svg class="base-timer__svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                  <g class="base-timer__circle" transform="rotate(-90, 50, 50)">
+                                    <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45"></circle>
+                                    <path
+                                      id="ram-usage"
+                                      stroke-dasharray="20 283"
+                                      class="base-timer__path-remaining green"
+                                      d="
+                                        M 50, 50
+                                        m -45, 0
+                                        a 45,45 0 1,0 90,0
+                                        a 45,45 0 1,0 -90,0
+                                      "
+                                    ></path>
+                                  </g>
+                                </svg>
+                                <span class="base-timer__label">
+                                    RAM
+                                </span>
+                                <span id="ram-usage-label" class="base-timer__label2">
+                                    74.12%
+                                </span>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+get_clusters_info();
+
+var clusters_infos = null;
+
+function update_clusters_info(clusters_info) {
+
+    $("#cluster-count").text(clusters_info.length);
+    clusters_infos = clusters_info;
+
+    var is_first = true;
+    $(".cluster-list-item").remove();
+
+    clusters_info.forEach(cluster => {
+
+        const cluster_name = cluster.cluster_name;
+        const cluster_type = cluster.type;
+        const cluster_status = cluster.status;
+       
+
+        const cluster_item = $(`
+            <div class="cluster-list-item">
+                <div class="cluster-list-item-icon" style="display: flex; align-items: center; justify-content: center;"><img src="static/images/s_cluster_icon.png" alt="ros"></div>
+                <div class="cluster-list-item-name" style="font-size: 14px; font-weight: 700;">${cluster_name}</div>
+                <div class="cluster-list-item-actions onclick="update_cluster_detail_name('${cluster_name}');">...</div>
+            </div>
+        `);
+
+
+        cluster_item.bind("click", function() {
+            update_cluster_detail_name(cluster_name);
+        });
+        
+        $("#cluster-list").append(cluster_item);
+
+        if(is_first) {
+            is_first = false;
+            update_cluster_detail(cluster);
+        }
+
+        cluster.nodes.forEach(node => {
+
+            const node_name = node.metadata.name;
+            const node_status = node.status;
+ 
+            const node_item = $(`
+                <div class="item-transition invisible-item ${cluster_name}">
+                    <div class="cluster-list-item">
+                        <div class="cluster-list-item-icon" style="display: flex; align-items: center; justify-content: center;"><img src="static/images/s_node_icon.png" alt="ros"></div>
+                        <div class="cluster-list-item-name">${node_name}</div>
+                        <div class="cluster-list-item-actions">...</div>
+                    </div>
+                </div>
+            `);
+
+            node_item.bind("click", function() {
+                update_node_detail_name(cluster_name, node_name);
+            });
+
+            $("#cluster-list").append(node_item);
+        });
+        
+    }); 
+}
+
+function update_cluster_detail(cluster) {
+
+    if(cluster) {
+        // 속성 존재 여부 확인 후 안전하게 접근
+        if (cluster.hasOwnProperty('cluster_name')) {
+            $("#cluster-detail-name").text(cluster.cluster_name);
+
+            grafana_source_name = cluster.cluster_name;
+            grafana_type = 'kubernetes-networking-cluster';
+            grafana_node_name = null;
+        }
+        
+        if (cluster.hasOwnProperty('cluster_type')) {
+            $("#cluster-detail-type").text(cluster.cluster_type);
+        }
+        if (cluster.hasOwnProperty('nodes') && Array.isArray(cluster.nodes)) {
+            $("#cluster-detail-node-count").text(cluster.nodes.length);
+            $("#cluster-detail-node-count2").text(cluster.nodes.length);
+        }
+        
+        if (cluster.hasOwnProperty('pods') && Array.isArray(cluster.pods)) {
+            $("#cluster-detail-pod-count2").text(cluster.pods.length);
+        }
+
+    
+        if (cluster.hasOwnProperty('timestamp')) {
+            $("#cluster-detail-updated").text(formatPythonTimestamp(cluster.timestamp));
+        }
+
+        if(ros_info) {
+            $("#cluster-detail-topic-count").text(0);
+            $("#cluster-detail-service-count").text(0);
+            $("#cluster-detail-action-count").text(0);
+
+            for(const ros_info_cluster in ros_info) {
+                const ros_info_cluster_data = ros_info[ros_info_cluster];
+                if(ros_info_cluster_data.cluster_name === cluster.cluster_name) {
+                    $("#cluster-detail-topic-count").text(ros_info_cluster_data.topics.length);
+                    $("#cluster-detail-service-count").text(ros_info_cluster_data.services.length);
+                    $("#cluster-detail-action-count").text(ros_info_cluster_data.actions.length);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+
+function update_cluster_detail_name(cluster_name) {
+
+
+    $("#cluster-detail-main").show();
+    $("#node-detail-main").hide();
+
+    const cluster = clusters_infos.find(cluster => cluster.cluster_name === cluster_name);
+
+    if(cluster) {
+        grafana_source_name = cluster.cluster_name;
+        grafana_type = 'kubernetes-networking-cluster';
+        grafana_node_name = null;
+
+        $("#cluster-detail-name").text(cluster.cluster_name);
+        $("#cluster-detail-type").text(cluster.cluster_type);
+        $("#cluster-detail-node-count").text(cluster.nodes.length);
+        $("#cluster-detail-node-count2").text(cluster.nodes.length);
+
+        $("#cluster-detail-pod-count2").text(cluster.pods.length);
+        
+
+        if( $("."+cluster_name).hasClass("invisible-item")) {
+            $("."+cluster_name).removeClass("invisible-item");
+        }
+        else {
+            $("."+cluster_name).addClass("invisible-item");
+        }
+
+        if (cluster.hasOwnProperty('timestamp')) {
+            $("#cluster-detail-updated").text(formatPythonTimestamp(cluster.timestamp));
+        }
+
+        if(ros_info) {
+            $("#cluster-detail-topic-count").text(0);
+            $("#cluster-detail-service-count").text(0);
+            $("#cluster-detail-action-count").text(0);
+
+            for(const ros_info_cluster in ros_info) {
+                const ros_info_cluster_data = ros_info[ros_info_cluster];
+                if(ros_info_cluster_data.cluster_name === cluster.cluster_name) {
+                    $("#cluster-detail-topic-count").text(ros_info_cluster_data.topics.length);
+                    $("#cluster-detail-service-count").text(ros_info_cluster_data.services.length);
+                    $("#cluster-detail-action-count").text(ros_info_cluster_data.actions.length);
+                    break;
+                }
+            }
+        }
+    }
+}
+
+function update_node_detail_name(cluster_name,node_name) {
+
+    $("#cluster-detail-main").hide();
+    $("#node-detail-main").show();
+
+    const cluster = clusters_infos.find(cluster => cluster.cluster_name === cluster_name);
+
+    if(cluster) {
+        const node = cluster.nodes.find(node => node.metadata.name === node_name);
+       
+
+        if(node) {
+            $("#node-detail-node-type").text('Worker Node');
+            console.log(node.metadata.labels);
+
+            if(checkProperty(node.metadata.labels, 'node-role.kubernetes.io/control-plane')) {
+                $("#node-detail-node-type").text('Master Node');
+            }
+
+
+
+            $("#node-detail-internal-ip").text(node.status.addresses[0].address);
+            $("#node-detail-created").text(convertUTCToSeoul(node.metadata.creationTimestamp));
+
+            $("#node-detail-name").text(node_name);
+            $("#cluster-detail-type").text(cluster.cluster_type);
+            $("#cluster-detail-node-count").text(cluster.nodes.length);
+ 
+            $("#cluster-detail-pod-count2").text(cluster.pods.length);
+
+            grafana_source_name = cluster.cluster_name;
+            grafana_node_name = node_name;
+            grafana_type = 'kubernetes-compute-resources-node-pods';
+        }
+    }
+
+}
+
+function update_ros_info() {
+    get_ros_info().then(data => {
+
+        ros_info = data;
+    });
+}
+
+
+update_ros_info();
+
+</script>

@@ -1,0 +1,434 @@
+<div class="cluster-container">
+    <div class="cluster-info-top" style="
+        background-image: url(static/images/bg-t-r.png); background-position: right top; background-repeat: no-repeat;
+        display: flex; flex-direction: column;">
+        <div class="cluster-header">
+            <img src="static/images/robot-m.png" width="40px" height="40px" alt="cluster_info" class="cluster-header-icon"> <span class="cluster-header-title">Robot</span>
+        </div>
+        
+        <div style="background: var(--box-inner-color2); width: auto; height: 100%; margin: 10px; padding: 10px; min-height: 350px;
+        display: flex; flex-direction: column;">
+            <div class="cluster-detail-sidebar">
+                Bridge List
+            </div>
+            <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                <div style="width: 400px; height: 40px; background: var(--box-inner-color); 
+                    display: flex;  flex-direction: row; align-items: center; padding-left: 10px;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;padding-right: 10px;"> 
+                        <i class="fas fa-search" style="margin-right: 5px;"></i><span>Search</span> 
+                    </div>
+                    <input type="text" id="filter-text-box" placeholder="Search..." oninput="onFilterTextBoxChanged()" 
+                    style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"/>
+                </div>
+                
+            </div>
+            <div id="bridge-chart" style="height: 100%; width: auto; ">
+
+            </div>
+        </div>
+
+
+        <div style="background: var(--box-inner-color2); width: auto; height: 100%; margin: 10px; padding: 10px; min-height: 250px;
+        display: flex; flex-direction: column;">
+            <div class="cluster-detail-sidebar" style="margin-bottom: 10px;">
+               Node List
+            </div>
+            <div id="node-chart" style="height: 100%; width: auto;">
+
+            </div>
+        </div>
+
+        <div style="background: var(--box-inner-color2); width: auto; margin: 10px; padding: 10px; height: 100%; min-height: 250px;
+        display: flex; flex-direction: column;">
+    
+            <div class="cluster-detail-sidebar" style="margin-bottom: 10px;">
+                <div style="display: flex; flex-direction: row;">
+                    <div onclick="showTab('topic')" style="padding: 5px 10px; cursor: pointer;" id="topic-tab">Topic</div>
+                    <div onclick="showTab('service')" style="padding: 5px 10px; cursor: pointer;" id="service-tab">Service</div>
+                    <div onclick="showTab('action')" style="padding: 5px 10px; cursor: pointer;" id="action-tab">Action</div>
+                </div>
+            </div>
+
+        
+
+            <div id="topic-chart" style="height: 100%; width: auto;">
+
+            </div>
+
+            <div id="service-chart" style="height: 100%; width: auto; display: none;">
+
+            </div>
+
+            <div id="action-chart" style="height: 100%; width: auto; display: none;">
+
+            </div>
+            <script>
+                function showTab(tab) {
+                    document.getElementById('topic-chart').style.display = tab === 'topic' ? 'block' : 'none';
+                    document.getElementById('service-chart').style.display = tab === 'service' ? 'block' : 'none';
+                    document.getElementById('action-chart').style.display = tab === 'action' ? 'block' : 'none';
+                }
+            </script>
+        </div>
+        
+        
+    </div>
+</div>
+<script>
+
+    var onFilterTextBoxChanged = null;
+    var onClusterNameChanged = null;
+
+    var update_ros_info_bridge= null;
+    var update_ros_info_node= null;
+    var update_ros_info_topic= null;
+    var update_ros_info_service= null;
+    var update_ros_info_action= null;
+    
+
+    function BridgeDetail() {
+
+    
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+               
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", minWidth: 150, pinned: "left"},
+                { field: "hostname", headerName: "Hostname", minWidth: 120, flex: 1, cellStyle: {textAlign: "center"} },
+                { field: "ip", headerName: "IP", width: 150, cellStyle: {textAlign: "center"} },
+                { field: "clustername", headerName: "Cluster", width: 150, cellStyle: {textAlign: "center"} },
+                { field: "zeromq", headerName: "ZeroMQ", minWidth: 200 , flex: 1, cellStyle: {textAlign: "center"}},
+                { field: "status", headerName: "Status", cellRenderer: StatusRenderer, width: 100 },
+                { field: "date", headerName: "Date", width: 170, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true,
+            onRowClicked: function(event) {
+                const ros_info = event.data.rowdata;
+                update_ros_info_node(ros_info);
+            },
+            rowSelection: {
+                mode: 'singleRow',
+                checkboxes: false,
+                headerCheckbox: false,
+                enableClickSelection: true,
+            }
+
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#bridge-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function _onFilterTextBoxChanged() {
+            gridApi.setGridOption(
+                "quickFilterText",
+                document.getElementById("filter-text-box").value,
+            );
+        }
+
+        update_ros_info_bridge = function(ros_info) {
+
+            gridApi.setGridOption("rowData", []);
+
+            var rowData = [];
+
+            for(const ros_info_cluster in ros_info) {
+                const ros_info_cluster_data = ros_info[ros_info_cluster];
+
+                rowData.push({
+                    name: ros_info_cluster_data.broker_name ,
+                    hostname: ros_info_cluster_data.hostname,
+                    ip: ros_info_cluster_data.ip,
+                    clustername: ros_info_cluster_data.cluster_name,
+                    zeromq: ros_info_cluster_data.zeromq,
+                    status: ros_info_cluster_data.status,
+                    date: ros_info_cluster_data.date,
+                    rowdata: ros_info_cluster_data
+                });
+               
+            }
+
+            if(rowData.length > 0) {
+                update_ros_info_node(rowData[0].rowdata);
+            
+                gridApi.setGridOption("rowData", rowData);
+            }
+
+           
+        }
+
+    
+        onFilterTextBoxChanged = _onFilterTextBoxChanged;
+    }
+
+
+    function NodeDetail() {
+
+    
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+               
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "name", headerName: "Name", minWidth: 150, flex: 1},
+                { field: "bridge", headerName: "Bridge", minWidth: 100, flex: 1, cellStyle: {textAlign: "center"}},
+                { field: "publisher", headerName: "Publisher", width: 120, cellStyle: {textAlign: "center"} },
+                { field: "subscriber", headerName: "Subscriber", width: 120, cellStyle: {textAlign: "center"} },
+                { field: "service", headerName: "Service", width: 100, cellStyle: {textAlign: "center"} },
+                { field: "action", headerName: "Action", width: 100, cellStyle: {textAlign: "center"} },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true,
+            onRowClicked: function(event) {
+                const node_data = event.data.rowdata;
+                const ros_info_cluster_data = event.data.ros_info_cluster_data;
+                update_ros_info_topic(ros_info_cluster_data, node_data);
+                update_ros_info_service(ros_info_cluster_data, node_data);
+                update_ros_info_action(ros_info_cluster_data, node_data);
+            },
+            rowSelection: {
+                mode: 'singleRow',
+                checkboxes: false,
+                headerCheckbox: false,
+                enableClickSelection: true,
+            }
+        };
+
+        update_ros_info_node = function(ros_info_cluster_data) {
+            gridApi.setGridOption("rowData", []);
+
+            var rowData = [];
+            ros_info_cluster_data.node.forEach(node => {
+                var publisher_count = 0;
+                var subscriber_count = 0;
+                var service_count = 0;
+                var action_count = 0;
+
+                ros_info_cluster_data.publishers.forEach(publisher => {
+                    if(publisher.node === node.node) {
+                        publisher_count++;
+                    }
+                });
+                ros_info_cluster_data.subscribers.forEach(subscriber => {
+                    if(subscriber.node === node.node) {
+                        subscriber_count++;
+                    }
+                });
+                ros_info_cluster_data.services.forEach(service => { 
+
+                    var servicenames = service.service.split("/");
+
+                    if(servicenames.length > 1) {
+                        const node_name = servicenames[1];
+                        if(node_name=== node.node) {
+                            service_count++;
+                        }
+                    }
+                });
+                ros_info_cluster_data.actions.forEach(action => {
+                    if(action.node === node.node) { 
+                        action_count++;
+                    }
+                });
+                
+                rowData.push({
+                    name: node.node,
+                    bridge: ros_info_cluster_data.broker_name,
+                    publisher: publisher_count,
+                    subscriber: subscriber_count,
+                    service: service_count,
+                    action: action_count,
+                    rowdata: node,
+                    ros_info_cluster_data: ros_info_cluster_data
+                });
+
+                if(rowData.length > 0) {
+                    update_ros_info_topic(ros_info_cluster_data, rowData[0].rowdata);
+                    update_ros_info_service(ros_info_cluster_data, rowData[0].rowdata);
+                    update_ros_info_action(ros_info_cluster_data, rowData[0].rowdata);
+                }
+            });
+
+            gridApi.setGridOption("rowData", rowData);
+        }
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#node-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+    }
+
+
+    function TopicDetail() {
+
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "topic", headerName: "Topic", minWidth: 150, flex: 1},
+                { field: "type", headerName: "Type", width: 120, cellStyle: {textAlign: "center"}},
+                { field: "topictypes", headerName: "Topic Types", minWidth: 200, flex: 2 },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true
+        };
+
+        update_ros_info_topic = function(ros_info, node_data) {
+            var rowData = [];
+
+
+            ros_info.publishers.forEach(publisher => {
+
+                if(publisher.node === node_data.node) {
+                rowData.push({
+                    topic: publisher.topic,
+                    type: "publisher",
+                        topictypes: publisher.topic_type
+                    });
+                }
+            });
+
+            ros_info.subscribers.forEach(subscriber => {
+
+                if(subscriber.node === node_data.node) {
+                rowData.push({
+                    topic: subscriber.topic,
+                        type: "subscriber",
+                        topictypes: subscriber.topic_type 
+                    });
+                }
+            });
+
+            gridApi.setGridOption("rowData", rowData);
+        }
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#topic-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+    }
+
+    function ServiceDetail() {
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+               
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "service", headerName: "Topic", minWidth: 150, flex: 1},
+                { field: "types", headerName: "Topic Types", minWidth: 200, flex: 2 },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true
+        };
+
+        update_ros_info_service = function(ros_info, node_data) {
+            var rowData = [];
+
+
+            ros_info.services.forEach(service => {
+
+                var servicenames = service.service.split("/");
+
+                if(servicenames.length > 1) {
+                    const node_name = servicenames[1];
+    
+                    
+                    if(node_name === node_data.node) {
+
+                        rowData.push({
+                            service: service.service,
+                            type: "service",
+                            types: service.types
+                            });
+                    }
+                }
+            })
+
+            gridApi.setGridOption("rowData", rowData);
+        }
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#service-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+    }
+
+    function ActionDetail() {
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+                { topic: "topic1", type: "publisher", topictypes: "geometry_msgs/msg/PoseWiteCovarianceStamped" },
+                { topic: "topic2", type: "subscriber", topictypes: "geometry_msgs/msg/PoseWiteCovarianceStamped" },
+                { topic: "topic3", type: "subscriber", topictypes: "geometry_msgs/msg/PoseWiteCovarianceStamped" },
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "action", headerName: "Action", minWidth: 150, flex: 1},
+                { field: "node", headerName: "Node", minWidth: 150, flex: 1},
+                { field: "topic", headerName: "Topic", minWidth: 150, flex: 1},
+                { field: "types", headerName: "Types", minWidth: 200, flex: 2 },
+            ],
+            pagination: true,
+            paginationAutoPageSize: true
+        };
+
+        update_ros_info_action = function(ros_info, node_data) {
+            var rowData = [];
+    
+
+            ros_info.actions.forEach(action => {
+
+                if(action.node === node_data.node) {
+                   
+                    rowData.push({
+                        action: action.action,
+                        node: action.node,
+                        topic: action.topic,
+                        types: action.types.join(", ")
+                        });
+                }
+            });
+
+        
+            gridApi.setGridOption("rowData", rowData);
+        }
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#action-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+    }
+
+    BridgeDetail();
+    NodeDetail();
+
+    TopicDetail();
+    ServiceDetail();
+    ActionDetail();
+
+</script>
+
+<script>
+
+function update_ros_info() {
+    get_ros_info().then(data => {
+        ros_info = data;
+        update_ros_info_bridge(ros_info);
+        
+    });
+}
+
+
+update_ros_info();
+
+</script>

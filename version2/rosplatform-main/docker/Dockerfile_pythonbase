@@ -1,0 +1,22 @@
+FROM python:3.12-alpine
+
+# Created by: edy100
+USER root
+
+RUN pip install --upgrade pip
+RUN pip install --upgrade setuptools
+RUN pip install --upgrade wheel
+
+RUN mkdir -p /app
+COPY app /app/app
+COPY static /app/static
+COPY templates /app/templates
+
+COPY requirements.txt /app/requirements.txt
+RUN pip install -r /app/requirements.txt
+
+ENV MONGODB_URL=mongodb://172.16.11.151:32000
+ENV MONGODB_USER=etri
+ENV MONGODB_PASSWORD=etri1234
+
+WORKDIR /app

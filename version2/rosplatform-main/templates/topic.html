@@ -1,0 +1,301 @@
+<div class="cluster-container">
+    <div class="cluster-info-top" style="background-image: url(static/images/bg-t-r.png); background-position: right top; background-repeat: no-repeat;">
+        <div class="cluster-header">
+            <img src="static/images/topic-m.png" width="40px" height="40px" alt="cluster_info" class="cluster-header-icon"> <span class="cluster-header-title">Topic</span>
+        </div>
+
+        <div style="background: var(--box-inner-color2); width: auto; height: calc(100% - 70px); margin: 10px;
+        display: flex; flex-direction: column;">
+
+            <div style="background: var(--box-inner-color2); width: auto; flex: 1; padding: 10px;">
+                <div class="cluster-detail-sidebar">
+                    Available Topics
+                </div>
+                <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                    <div style="width: 300px; height: 40px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center;">
+                        <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;"> 
+                            <img src="static/images/s_cluster_icon2.png" alt="node"><span>Bridge</span> 
+                        </div>
+                            
+                        <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                        padding-left: 10px;">
+                            <select name="cluster_names" id="cluster_names" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"
+                              onchange="onClusterNameChanged()">
+                                <option value="*">All</option>
+                                <option value="edge">edge</option>
+                                <option value="zento">zento</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="width: 400px; height: 40px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center; padding-left: 10px;">
+                        <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;padding-right: 10px;"> 
+                            <i class="fas fa-search" style="margin-right: 5px;"></i><span>Search</span> 
+                        </div>
+                        <input type="text" id="filter-text-box" placeholder="Search..." oninput="onFilterTextBoxChanged()" 
+                        style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"/>
+                    </div>
+                    
+                </div>
+                <div id="available-topic-chart" style="height: calc(100% - 80px); width: auto; min-height: 250px;">
+    
+                </div>
+            </div>
+
+            <div style="background: var(--box-inner-color2); width: auto; flex: 1;  padding: 10px;">
+                <div class="cluster-detail-sidebar">
+                    Active Topics
+                </div>
+                <div style="display: flex;  flex-direction: row; margin-bottom: 10px; margin-top: 10px; height: 40px;">
+                    <div style="width: 300px; height: 40px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center;">
+                        <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;"> 
+                            <img src="static/images/s_cluster_icon2.png" alt="node"><span>Bridge</span> 
+                        </div>
+                            
+                        <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                        padding-left: 10px;">
+                            <select name="cluster_names2" id="cluster_names2" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"
+                              onchange="onClusterNameChanged2()">
+                                <option value="*">All</option>
+                                <option value="edge">edge</option>
+                                <option value="zento">zento</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="width: 400px; height: 40px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center; padding-left: 10px;">
+                        <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;padding-right: 10px;"> 
+                            <i class="fas fa-search" style="margin-right: 5px;"></i><span>Search</span> 
+                        </div>
+                        <input type="text" id="filter-text-box2" placeholder="Search..." oninput="onFilterTextBoxChanged2()" 
+                        style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;"/>
+                    </div>
+                    
+                </div>
+                <div id="active-topic-chart" style="height: calc(100% - 80px); width: auto; min-height: 250px;">
+    
+                </div>
+            </div>
+
+        </div>
+        
+        
+        
+    </div>
+</div>
+<script>
+
+    var onFilterTextBoxChanged = null;
+    var onClusterNameChanged = null;
+
+
+    var onFilterTextBoxChanged2 = null;
+    var onClusterNameChanged2 = null;
+
+    var update_ros_info_topic = null;
+    var update_ros_info_active_topic = null;
+    
+
+    function AvailableTopicDetail() {
+
+        let cluster_name = "*";
+        
+        function doesExternalFilterPass(node) {
+
+            if (cluster_name === "*") {
+                return true;
+            }else if (node.data.bridge === cluster_name) {
+
+                return true;
+            }
+
+            return false;
+        }
+
+    
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+              
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "topic", headerName: "Topic Type", minWidth: 150, flex: 1},
+                { field: "type", headerName: "Type", width: 200, cellStyle: {textAlign: "center"}},
+                { field: "bridge", headerName: "Bridge", width: 200, cellStyle: {textAlign: "center"}},
+            ],
+            pagination: true,
+            paginationAutoPageSize: true,
+            isExternalFilterPresent: isExternalFilterPresent,
+            doesExternalFilterPass: doesExternalFilterPass
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#available-topic-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function isExternalFilterPresent() {
+            return cluster_name !== "*";
+          
+        }
+
+        function _onFilterTextBoxChanged() {
+            gridApi.setGridOption(
+                "quickFilterText",
+                document.getElementById("filter-text-box").value,
+            );
+        }
+
+        function _onClusterNameChanged() {
+            cluster_name = document.getElementById("cluster_names").value;
+            gridApi.onFilterChanged();
+        }
+
+        update_ros_info_topic = function(ros_info) {
+            gridApi.setGridOption("rowData", []);
+
+            var rowData = [];
+
+            $("#cluster_names").empty();
+            $("#cluster_names").append("<option value='*'>All</option>");
+
+            $("#cluster_names2").empty();
+            $("#cluster_names2").append("<option value='*'>All</option>");
+
+
+            for(const ros_info_cluster in ros_info) {
+                const ros_info_cluster_data = ros_info[ros_info_cluster];
+
+                $("#cluster_names").append("<option value='" + ros_info_cluster + "'>" + ros_info_cluster + "</option>");
+                $("#cluster_names2").append("<option value='" + ros_info_cluster + "'>" + ros_info_cluster + "</option>");
+
+                for(const message_type in ros_info_cluster_data.available_topics) {
+                    const message_type_data = ros_info_cluster_data.available_topics[message_type];
+
+                    message_type_data.forEach(topic => {
+                        rowData.push({
+                            topic: topic,
+                            type: message_type,
+                            bridge: ros_info_cluster
+                        });
+                    });
+                }
+            
+                
+            }
+
+            gridApi.setGridOption("rowData", rowData);
+        
+        }
+        
+
+        onFilterTextBoxChanged = _onFilterTextBoxChanged;
+        onClusterNameChanged = _onClusterNameChanged;
+    }
+
+
+    function ActiveTopicDetail() {
+
+        let cluster_name = "*";
+        
+        function doesExternalFilterPass(node) {
+
+            if (cluster_name === "*") {
+                return true;
+            }else if (node.data.bridge === cluster_name) {
+
+                return true;
+            }
+
+            return false;
+        }
+
+    
+        const gridOptions = {
+            // Row Data: The data to be displayed.
+            rowData: [
+               
+            ],
+            // Column Definitions: Defines the columns to be displayed.
+            columnDefs: [
+                { field: "topic", headerName: "Topic", minWidth: 150, flex: 1},
+                //{ field: "type", headerName: "Type", width: 120, cellStyle: {textAlign: "center"}},
+                { field: "types", headerName: "Types", minWidth: 200, flex: 2 },
+                { field: "bridge", headerName: "Bridge", width: 200, cellStyle: {textAlign: "center"}},
+            ],
+            pagination: true,
+            paginationAutoPageSize: true,
+            isExternalFilterPresent: isExternalFilterPresent,
+            doesExternalFilterPass: doesExternalFilterPass
+        };
+
+        // Your Javascript code to create the Data Grid
+        const myGridElement = document.querySelector('#active-topic-chart');
+        const gridApi = agGrid.createGrid(myGridElement, gridOptions);
+
+        function isExternalFilterPresent() {
+            return cluster_name !== "*";
+          
+        }
+
+        function _onFilterTextBoxChanged() {
+            gridApi.setGridOption(
+                "quickFilterText",
+                document.getElementById("filter-text-box2").value,
+            );
+        }
+
+        function _onClusterNameChanged() {
+            cluster_name = document.getElementById("cluster_names2").value;
+            gridApi.onFilterChanged();
+        }
+
+        update_ros_info_active_topic = function(ros_info) {
+            gridApi.setGridOption("rowData", []);
+
+            var rowData = [];
+
+            for(const ros_info_cluster in ros_info) {
+                const ros_info_cluster_data = ros_info[ros_info_cluster];
+                ros_info_cluster_data.topics.forEach(topic => {
+                    rowData.push({
+                        topic: topic.topic,
+                        types: topic.types.join(", "),
+                        bridge: ros_info_cluster
+                    });
+                });
+            }
+
+            gridApi.setGridOption("rowData", rowData);
+        }
+
+        
+
+        onFilterTextBoxChanged2 = _onFilterTextBoxChanged;
+        onClusterNameChanged2 = _onClusterNameChanged;
+    }
+
+   
+
+    AvailableTopicDetail();
+    ActiveTopicDetail();
+
+</script>
+
+<script>
+
+
+function update_ros_info() {
+    get_ros_info().then(data => {
+        const ros_info = data;
+        update_ros_info_topic(ros_info);
+        update_ros_info_active_topic(ros_info);
+    });
+}
+
+
+update_ros_info();
+
+</script>

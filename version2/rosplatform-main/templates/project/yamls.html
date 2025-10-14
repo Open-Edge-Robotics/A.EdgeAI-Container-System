@@ -1,0 +1,459 @@
+<div class="cluster-container">
+    <div class="cluster-info-top" style="background-image: url(static/images/bg-t-r.png); background-position: right top; background-repeat: no-repeat;">
+        <div class="cluster-header">
+            <img src="static/images/yaml-m.png" width="40px" height="40px" alt="cluster_info" class="cluster-header-icon"> <span class="cluster-header-title">From Yamls</span>
+        </div>
+        
+        <div id="yaml_create_modal" style="background: var(--box-inner-color2); width: auto; height: calc(100% - 70px); margin: 10px; padding: 10px;">
+            <div style="padding: 10px; display: flex; flex-direction: row; align-items: center; ">
+                <!-- div style="width: 300px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center; margin: 10px;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;"> 
+                        <img src="static/images/workspace-w.png" alt="node"><span>Workspace</span> 
+                    </div>
+                        
+                    <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                    padding-left: 10px;">
+                        <select name="workspace_names" id="workspace_names" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;" aria-label="Select workspace">
+                            <option value="*">All</option>
+                            <option value="workspace1">workspace1</option>
+                            <option value="workspace2">workspace2</option>
+                            <option value="workspace3">workspace3</option>
+                            <option value="workspace4">workspace4</option>
+                            <option value="workspace5">workspace5</option>
+                            <option value="workspace6">workspace6</option>
+                            <option value="workspace7">workspace7</option>
+                        </select>
+                    </div>
+                </div -->
+
+                <div style="width: 300px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center; margin: 10px;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;"> 
+                        <img src="static/images/project-w.png" alt="node"><span>Project</span> 
+                    </div>
+                        
+                    <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                    padding-left: 10px;">
+                        <select name="project_names" id="project_names" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;" aria-label="Select project" onchange="onProjectChanged_yaml()">
+                            <option value="*">All</option>
+                        </select>
+                    </div>
+                </div>
+                
+            </div>
+            <div style="height: 1px;background: #363636;width: 100%;">
+
+            </div>
+
+
+            <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center; ">
+                <div style="width: 300px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center; margin-left: 10px;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;"> 
+                        <span>Priority</span> 
+                    </div>
+                        
+                    <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                    padding-left: 10px;">
+                        <select name="priority" id="yaml_priority" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;" aria-label="Select priority" onchange="onPriorityChanged_yaml()">
+                            <option value="setcluster">Set Cluster</option>
+                            <option value="selectedcluster">Selected Cluster</option>
+                            <option value="lowlatency">Low Latency</option>
+                            <option value="mostrequested">Most Requested</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;margin-top: 10px;">
+                <div style="display: flex;  flex-direction: row; align-items: center; margin-left: 10px; width: 100%;">
+                    <div style="background: var(--box-inner-color);  padding-left: 10px; display: flex; flex-direction: row; align-items: center; width: 150px;"> 
+                        <span>Target Cluster</span> 
+                    </div>
+                        
+                    <div class="form-all-show form-lowlatency form-selectedcluster" style="width: 100%; height: 100%; display: flex; flex-direction: row; align-items: center;
+                    padding-left: 10px;"> 
+                        <div id="yaml_target-clusters" style="display: flex; flex-direction: row; align-items: center;">
+                            <input type="checkbox" style="margin-right: 5px;" id="yaml_cluster1" name="cluster1" onchange="onTargetClusterChanged_yaml(this)" /><label for="cluster1" style="margin-right: 10px;">cluster1</label>
+                            <input type="checkbox" style="margin-right: 5px;" id="yaml_cluster2" name="cluster2" onchange="onTargetClusterChanged_yaml(this)" /><label for="cluster2" style="margin-right: 10px;">cluster2</label>
+                        </div>
+                        <div class="add-label-btn" style="width: 150px;" onclick="addLevel_yaml()"> 
+                            Add Level
+                        </div>
+                        <div class="yaml_level-list" style="margin-left: 10px; display: flex; flex-direction: row; align-items: center; height: 30px;">
+                            <div class="yaml_level-item"></div>
+                        </div>
+                        <div class="remove-label-btn" onclick="removeLevel_yaml()">
+                            <i class="fa-solid fa-minus remove-label-icon"></i>
+                        </div>
+                        <input id="yaml_present-clusters" type="text" disabled>
+                        
+                    </div>
+                    <div class="form-all-show form-setcluster" style="height: 100%; display: flex; flex-direction: row; align-items: center; padding-left: 10px;">
+                        <select id="yaml_target-cluster" style="outline: none; background:#000000;outline: 0;border: 0;color: #fff;width: 100%;border-radius: 5px;padding: 5px;font-size: 14px;">
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+
+
+            <div class="form-all-show form-lowlatency1" style="padding-left: 10px; display: flex; flex-direction: row; align-items: center; margin-top: 10px;">
+                <div style="width: 300px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center; margin-left: 10px;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center; width: 150px;"> 
+                        <span>Souce Cluster</span> 
+                    </div>
+                        
+                    <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                    padding-left: 10px;">
+                        <select name="source_cluster" id="yaml_source_cluster" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;" aria-label="Select source cluster"
+                        onchange="onSourceClusterChanged_yaml()">
+                            <option value="cluster1">cluster1</option>
+                            <option value="cluster2">cluster2</option>
+                            <option value="cluster3">cluster3</option>
+                            <option value="cluster4">cluster4</option>
+                            <option value="cluster5">cluster5</option>
+                            <option value="cluster6">cluster6</option>
+                            <option value="cluster7">cluster7</option>
+                        </select>
+                    </div>
+                </div>
+                
+
+                <div class="form-all-show form-lowlatency" style="width: 300px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center; margin-left: 20px;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center;width: 150px;"> 
+                        <span>Source Node</span> 
+                    </div>
+                        
+                    <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                    padding-left: 10px;">
+                        <select name="source_node" id="yaml_source_node" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;" aria-label="Select source node">
+                            <option value="node1">node1</option>
+                            <option value="node2">node2</option>
+                            <option value="node3">node3</option>
+                            <option value="node4">node4</option>
+                            <option value="node5">node5</option>
+                            <option value="node6">node6</option>
+                            <option value="node7">node7</option>
+                        </select>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="form-all-show" style="padding-left: 10px; display: flex; flex-direction: row; align-items: center; margin-top: 10px;">
+                <div style="width: 300px; background: var(--box-inner-color); 
+                        display: flex;  flex-direction: row; align-items: center; margin-left: 10px;">
+                    <div style="padding-left: 10px; display: flex; flex-direction: row; align-items: center; width: 150px;"> 
+                        <span>Select Cluster</span> 
+                    </div>
+                        
+                    <div style="width: 100%; height: 100%; background: var(--box-inner-color);display: flex; flex-direction: row; align-items: center;
+                        padding-left: 10px;">
+                        <select name="select_cluster" id="select_cluster" style="height: 30px; width: 100%;background: #0F0F0F;outline: 0;border: 0;color: #fff;padding: .5em;" aria-label="Select target cluster">
+                            <option value="cluster1">cluster1</option>
+                            <option value="cluster2">cluster2</option>
+                            <option value="cluster3">cluster3</option>
+                            <option value="cluster4">cluster4</option>
+                            <option value="cluster5">cluster5</option>
+                            <option value="cluster6">cluster6</option>
+                            <option value="cluster7">cluster7</option>
+                        </select>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div style="height: calc(100% - 250px); width: auto; margin-top: 10px; min-height: 200px;padding-bottom: 10px;">
+                <pre id="editor" style="height: 100%; width: 100%;"></pre>
+            </div>
+            <div style="width: 100%; margin-top: 10px;display: flex; flex-direction: row; align-items: center; justify-content: flex-end;">
+                <div style="height: 40px; border-radius: 3px; background: #00B050; width: 90px; display: flex; flex-direction: row; align-items: center; justify-content: center;margin-right: 10px;cursor: pointer;" onclick="send_simple_yaml()">
+                    <i class="fas fa-plus" style="margin-right: 5px;"></i> <span style="color: #fff; font-size: 14px; font-weight: 600;">Create</span>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    var editor = ace.edit("editor", {
+        mode: "ace/mode/yaml",
+        selectionStyle: "text"
+    });
+
+    editor.setTheme("ace/theme/twilight");
+    editor.session.setMode("ace/mode/yaml");
+    editor.setOptions({
+        autoScrollEditorIntoView: true,
+        copyWithEmptySelection: true,
+    });
+</script>
+
+<script>
+
+function get_project_list() {
+    get_projects(get_current_user().username, (data) => {
+        user_projects = data;
+        var options = "";
+
+        for(var i = 0; i < data.length; i++) {
+            options += "<option value='" + data[i].name + "'>" + data[i].name + "</option>";
+        }        
+
+        $("#project_names").html(options);
+
+        onProjectChanged_yaml();
+    });
+}
+
+get_project_list();
+
+
+
+function addLevel_yaml() {
+    var last_level = $(".yaml_level-item").last();
+    var names_str = last_level.html().trim();
+
+    if(names_str.length == 0) {
+        return;
+    }
+
+    var new_level = $("<div class='yaml_level-item'></div>");
+    $(".yaml_level-list").append(new_level);
+
+    
+}
+
+
+function removeLevel_yaml() {
+
+    if($(".yaml_level-item").length == 1) {
+        return;
+    }
+
+    var last_level = $(".yaml_level-item").last();
+
+    var names_str = last_level.html().trim();
+
+    if(names_str.length != 0) {
+        var names = names_str.split(",");
+
+        $("#yaml_target-clusters input").each(function() {
+            var name = $(this).attr("name");
+            var is_checked = $(this).prop("checked");
+    
+            if(names.includes(name)) {
+                $(this).prop("checked", false);
+            }
+        });
+    }
+
+    $(".yaml_level-item").last().remove();
+
+    onPresentClustersChanged_yaml();
+}
+
+
+function onPresentClustersChanged_yaml() {
+    var present_clusters = $("#yaml_present-clusters").val();
+    
+    var present_levels = [];
+
+    $(".yaml_level-item").each(function() {
+        var names_str = $(this).html().trim();
+
+        var names = names_str.split(",");
+
+        if(names_str.length == 0) {
+            return;
+        }
+
+        present_levels.push(names);
+    });
+
+    var present_levels_str = JSON.stringify(present_levels);
+
+    if(present_levels.length == 1) {
+        present_levels_str = JSON.stringify(present_levels[0]);
+    }else if(present_levels.length == 0) {
+        present_levels_str = "";
+    }
+
+    $("#yaml_present-clusters").val(present_levels_str);
+}
+
+function onTargetClusterChanged_yaml(checkbox) {
+
+    var name = $(checkbox).attr("name");
+
+    var last_level = $(".yaml_level-item").last();
+
+    var names_str = last_level.html().trim();
+
+    var names = names_str.split(",");
+
+    if(names_str.length == 0) {
+        names = [];
+    }
+
+    var is_checked = $(checkbox).prop("checked");
+
+    if(is_checked) {
+        names.push(name);
+        last_level.html(names.join(","));
+    }else{
+
+        $(".yaml_level-item").each(function() {
+            var level_names = $(this).html().split(",");
+            level_names = level_names.filter(n => n !== name);
+            $(this).html(level_names.join(","));
+        });
+    }
+
+    onPresentClustersChanged_yaml();
+}
+
+
+function onProjectChanged_yaml() {
+    var value = $("#project_names").val();
+    
+    var project = user_projects.find(project => project.name == value);
+    if(project) {
+        var options = "";
+        for(var i = 0; i < project.clusters.length; i++) {
+            options += "<option value='" + project.clusters[i] + "'>" + project.clusters[i] + "</option>";
+        }
+        $("#yaml_target-cluster").html(options);
+        $("#yaml_source-cluster").html(options);
+
+        var inputs = "";
+        for(var i = 0; i < project.clusters.length; i++) {
+            inputs += `<input type='checkbox' id='${project.clusters[i]}' name='${project.clusters[i]}' onchange='onTargetClusterChanged_yaml(this)' /><span class='cluster-item-name_yaml'>${project.clusters[i]}</span>`;
+        }
+        $("#yaml_target-clusters").html(inputs);
+
+        $("#yaml_source_cluster").html(options);
+    }
+
+    onSourceClusterChanged();
+}
+
+function onPriorityChanged_yaml() {
+    var value = $("#yaml_priority").val();
+
+    $(".form-all-show").hide();
+
+    if(value == "selectedcluster") {
+        $(".form-selectedcluster").show();
+    } else if(value == "lowlatency") {
+        $(".form-lowlatency").show();
+        onSourceClusterChanged_yaml();
+    } else if(value == "mostrequested") {
+        $(".form-mostrequested").show();
+    } else if(value == "setcluster") {
+        $(".form-setcluster").show();
+    }
+}
+
+
+function onSourceClusterChanged_yaml() {
+    var value = $("#yaml_source_cluster").val();
+    var clusters = current_clusters.filter(cluster => cluster.cluster_name == value);
+
+    if(clusters.length == 0) {
+        return;
+    }
+
+    var nodes = clusters[0].nodes;
+
+    var options = "";
+    for(var i = 0; i < nodes.length; i++) {
+        options += `<option value='${nodes[i].metadata.name}'>${nodes[i].metadata.name}</option>`;
+    }
+
+    $("#yaml_source_node").html(options);
+   
+}
+
+
+
+onPriorityChanged_yaml();
+
+
+function getValue_yaml(name)
+{
+    return $(`#yaml_create_modal ${name}`).val();
+}
+
+
+function send_simple_yaml() {
+    var yaml = editor.getValue();
+
+    yaml = yaml.trim();
+
+    if(yaml.length == 0) {
+        alert("Please enter a valid yaml");
+        return;
+    }
+
+    const target_cluster = getValue_yaml("#yaml_target-cluster");
+    const source_cluster = getValue_yaml("#yaml_source_cluster");
+    const source_node = getValue_yaml("#yaml_source_node");
+    const pull_secret = getValue_yaml("#yaml_pull-secret");
+    const priority = getValue_yaml("#yaml_priority");
+    const present_clusters = getValue_yaml("#yaml_present-clusters");
+    const project = getValue_yaml("#project_names");
+
+
+    if(priority == "setcluster") {
+        if(target_cluster.length == 0) {
+            alert("Please select a target cluster");
+            return;
+        }
+    }else if(priority == "selectedcluster") {
+        if(present_clusters.length == 0) {
+            alert("Please select a target cluster");
+            return;
+        }
+    }
+    
+
+    const project_ = user_projects.find(project__ => project__.name == project);
+
+    var any_resource = {
+        type: "yaml",
+        username: get_current_user().username,
+        workspace: project_.workspace_name,
+        project: project,
+        priority: priority,
+        present_clusters: present_clusters,
+        target_cluster: target_cluster,
+        source_cluster: source_cluster,
+        source_node: source_node,
+        yaml: yaml
+    };
+
+
+    zfetch("/requst_kube_api", "POST", any_resource).then(data => {
+        const is_success = error_handler(data);
+        if(!is_success) {
+            return;
+        }
+
+        alert("Yaml created successfully");
+    }).catch(error => {
+        console.log(error);
+    });
+
+}
+
+
+</script>
+
+<script src="static/js/drag_clusters.js"></script>

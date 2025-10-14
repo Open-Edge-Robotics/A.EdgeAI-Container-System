@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDGE Server</title>
+    <link rel="shortcut icon" href="">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+
+    <script src="static/js/jquery-3.7.1.min.js"></script>
+    <script src="static/js/ag-grid-community.min.js"></script>
+    <script src="static/js/chart.umd.min.js"></script>
+    <script src="static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="static/js/main.js"></script>
+    <script src="static/js/ag-grid-extra.js"></script>
+    <script src="static/js/grafana.js"></script>
+    <script src="static/js/request.js"></script>
+
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/all.min.css" rel="stylesheet">
+    <link href="static/css/main.css" rel="stylesheet">
+    <link href="static/css/timer.css" rel="stylesheet">
+    <link href="static/css/paperlogy.css" rel="stylesheet" />
+    <link href="static/css/ag-grid.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="top-nav">
+        <div class="top-nav-left"> 
+            <img src="static/images/top_icon2_r.png" alt="top_icon" style="width: 70%; height: 70%;">
+        </div>
+        <div class="top-nav-center">
+            <div class="top-nav-center-left">
+                <span class="txt-span"> PAGE </span>
+                <span class="txt-span" style="margin: 0 5px; color: #929292;"> | </span>
+                <span class="txt-span2"> User Info </span>
+            </div>
+            
+        </div>
+
+        <div class="top-nav-right">
+            <div class="top-nav-right-setting middle-center">
+                <a href="#">
+                    <img src="static/images/setting.png" alt="setting">
+                </a>
+            </div>
+            <div class="top-nav-right-setting middle-center">
+                <img src="static/images/user_active.png" alt="user_active" >
+            </div>
+            <div class="top-nav-right-setting middle-center top-nav-right-user-info">
+                <div class="user-info-txt">
+                    Project Manger
+                </div>
+                <div id="user-info-name2" class="user-info-txt2">
+                    User123
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="main-container-left" >
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <div class="sidebar-toggle2">
+                        <img src="static/svg/side_projectinfo.svg" alt="side_dashboard" class="sidebar-active" style="width: 16px; height: 16px;"> <span style="padding-left: 5px;">Project Info</span>
+                    </div>
+                    <div>
+                        <ul class="sidebar-menu">
+                            <li class="sidebar-menu-item" onclick="fetchData2(this, event,'/project/userinfo')"><img src="static/images/next_cursor.png" alt="next_cursor"><span>User Info</span></li>
+                            <li class="sidebar-menu-item" onclick="fetchData2(this, event,'/project/project')"><img src="static/images/next_cursor.png" alt="next_cursor"><span>Project</span></li>
+                            <li class="sidebar-menu-item" onclick="fetchData2(this, event,'/project/cluster')"><img src="static/images/next_cursor.png" alt="next_cursor"><span>Cluster</span></li>
+                            <li class="sidebar-menu-item" onclick="fetchData2(this, event,'/project/node')"><img src="static/images/next_cursor.png" alt="next_cursor"><span>Node</span></li>
+                        </ul>
+                    </div>
+                    <div class="sidebar-toggle2" onclick="fetchData2(this, event,'/project/depolyment')">
+                        <img src="static/svg/side_resource.svg" alt="side_cluster" style="width: 16px; height: 16px;"> <span style="padding-left: 5px;">Resources</span>
+                    </div>
+                    <div>
+                        <ul class="sidebar-menu">
+                            <li class="sidebar-menu-item" onclick="fetchData2(this, event,'/project/deployment')"><img src="static/images/next_cursor.png" alt="next_cursor"><span>Depolyment</span></li>
+                            <li class="sidebar-menu-item" onclick="fetchData2(this, event,'/project/pod')"><img src="static/images/next_cursor.png" alt="next_cursor"><span>Pod</span></li>
+                            <li class="sidebar-menu-item" onclick="fetchData2(this, event,'/project/service')"><img src="static/images/next_cursor.png" alt="next_cursor"><span>K-Service</span></li>
+                            <li class="sidebar-menu-item" onclick="fetchData2(this, event,'/project/volume')"><img src="static/images/next_cursor.png" alt="next_cursor"><span>Volume</span></li>
+                            <li class="sidebar-menu-item" onclick="fetchData2(this, event,'/project/yamls')"><img src="static/images/next_cursor.png" alt="next_cursor"><span>Yamls</span></li>
+                        </ul>
+                    </div>
+                    <div class="sidebar-toggle2" onclick="fetchData2(this, event,'/project/robot')">
+                        <img src="static/svg/side_robot2.svg" alt="side_node" style="width: 16px; height: 16px;"> <span style="padding-left: 5px;">Robot</span>
+                    </div>
+                    <div>
+                        <ul class="sidebar-menu">
+                            <li class="sidebar-menu-item" onclick="fetchData2(this, event,'/project/robot')"><img src="static/images/next_cursor.png" alt="next_cursor"><span>Robot</span></li>
+                            <li class="sidebar-menu-item" onclick="fetchData2(this, event,'/project/topic')"><img src="static/images/next_cursor.png" alt="next_cursor"><span>Topic</span></li>
+                            <li class="sidebar-menu-item" onclick="fetchData2(this, event,'/project/serviceaction')"><img src="static/images/next_cursor.png" alt="next_cursor"><span>Service/Action</span></li>
+                            <li class="sidebar-menu-item" onclick="fetchData2(this, event,'/project/map')"><img src="static/images/next_cursor.png" alt="next_cursor"><span>Map</span></li>
+                        </ul>
+                    </div>
+                    <div class="sidebar-toggle2"  onclick="fetchData2(this, event,'pod')">
+                        <img src="static/svg/side_utils.svg" alt="side_pod" style="width: 16px; height: 16px;"> <span style="padding-left: 5px;">Utils</span>
+                    </div>
+                </div>
+            </div>
+            <div class="bottom-sidebar">
+                <div class="sidebar-toggle" onclick="logout()">
+                    <img src="static/svg/side_logout.svg" alt="side_logout" > <span>Logout</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-container-right main-container-right-full">
+             <main id="main-content" class="main-content">
+
+             </main>
+        </div>
+    </div>
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchData2(undefined, undefined, '/project/userinfo');
+            check_user()
+        });
+
+        $( document ).ready(function() {
+            fetchData2(undefined, undefined, '/project/userinfo');
+            check_user()
+        });
+
+        function logout() {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("token_type");
+            localStorage.removeItem("user_id");
+            localStorage.removeItem("user_type");
+            window.location.href = "/";
+        }
+    </script>
+
+    <div class="out_panel" id="create_modal" style="display: none;">
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-logo-container"><img src="static/images/logo2.png" alt="logo" class="modal-logo"></div>
+                <div class="modal-title-container">
+                <span class="modal-title" id="modal-title">Deployment</span>
+                </div>
+            
+                <div class="form-row form-resource-show form-deployment form-pod">
+                    <div class="insert-title">Name: </div>
+                    <div class="insert-input-box"> 
+                        <input id="create-name" type="text" placeholder="Please enter name">
+                    </div>
+                </div>
+                <div class="form-row-margin form-resource-show form-deployment form-pod">
+                    <div class="insert-title">Spec Lables </div>
+                    <div class="add-label-btn" onclick="addLable()"> 
+                        Add Lable
+                    </div>
+                </div>
+                <div class="form-resource-show form-deployment form-pod" id="create-lables" >
+                </div>
+                <div class="form-row form-resource-show form-deployment" style="padding-top: 10px;">
+                    <div class="insert-title">Replicas: </div>
+                    <div class="insert-input-box"> 
+                        <input id="replicas" type="text" placeholder="1" value="1">
+                    </div>
+                </div>
+                <div class="form-row-margin form-resource-show form-deployment form-pod">
+                    <div class="insert-title">Pull Secret </div>
+                    <div class="insert-input-box"> 
+                        <input id="pull-secret" type="text">
+                    </div>
+                </div>
+                <div style="height: 2px; background: #363636; margin: 10px 0;">
+
+                </div>
+                <div class="form-row  form-resource-show form-deployment form-pod">
+                    <div class="insert-title">Project: </div>
+                    <div> 
+                        <select id="select-project" style="outline: none; background:#1C1C1C;outline: 0;border: 0;color: #fff;width: 100%;border-radius: 5px;padding: 5px;font-size: 14px;" onchange="onProjectChanged()">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row form-resource-show form-deployment form-pod">
+                    <div class="insert-title">Priority: </div>
+                    <div> 
+                        <select id="priority" style="outline: none; background:#1C1C1C;outline: 0;border: 0;color: #fff;width: 100%;border-radius: 5px;padding: 5px;font-size: 14px;" onchange="onPriorityChanged()">
+                            <option value="setcluster">Set Cluster</option>
+                            <option value="selectedcluster">Selected Cluster</option>
+                            <option value="lowlatency">Low Latency</option>
+                            <option value="mostrequested">Most Requested</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row form-all-show form-lowlatency form-selectedcluster form-resource-show form-deployment form-pod">
+                    <div class="insert-title">Target Clusters: </div>
+                    <div  style="display: flex; flex-direction: row; align-items: center; width: calc(100% - 210px);"> 
+                        <div id="target-clusters" style="display: flex; flex-direction: row; align-items: center;">
+                            <input type="checkbox" style="margin-right: 5px;" id="cluster1" name="cluster1" onchange="onTargetClusterChanged(this)" /><label for="cluster1" style="margin-right: 10px;">cluster1</label>
+                            <input type="checkbox" style="margin-right: 5px;" id="cluster2" name="cluster2" onchange="onTargetClusterChanged(this)" /><label for="cluster2" style="margin-right: 10px;">cluster2</label>
+                        </div>
+                        <div class="add-label-btn" style="width: 150px;" onclick="addLevel()"> 
+                            Add Level
+                        </div>
+                        <!-- div class="level-list" style="margin-left: 10px; display: flex; flex-direction: row; align-items: center; height: 30px;">
+                            <div class="level-item"></div>
+                        </div>
+                        <div class="remove-label-btn" onclick="removeLevel()">
+                            <i class="fa-solid fa-minus remove-label-icon"></i>
+                        </div -->
+                        
+                    </div>
+                </div>
+                <div class="form-row form-all-show form-lowlatency form-selectedcluster form-resource-show form-deployment form-pod">
+                    <div class="insert-title"></div>
+                    <div class="insert-input-box"> 
+                        <input id="present-clusters" type="text" disabled>
+                    </div>
+                </div>
+                <div class="form-row form-all-show form-setcluster form-resource-show form-deployment form-pod">
+                    <div class="insert-title">Target Cluster: </div>
+                    <div> 
+                        <select id="target-cluster" style="outline: none; background:#1C1C1C;outline: 0;border: 0;color: #fff;width: 100%;border-radius: 5px;padding: 5px;font-size: 14px;">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row form-all-show form-lowlatency1 form-resource-show form-deployment form-pod">
+                    <div class="insert-title">Source Cluster: </div>
+                    <div> 
+                        <select id="source-cluster" style="outline: none; background:#1C1C1C;outline: 0;border: 0;color: #fff;width: 100%;border-radius: 5px;padding: 5px;font-size: 14px;" onchange="onSourceClusterChanged()">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row form-all-show form-lowlatency1 form-resource-show form-deployment form-pod">
+                    <div class="insert-title">Source Node: </div>
+                    <div> 
+                        <select id="source-node" style="outline: none; background:#1C1C1C;outline: 0;border: 0;color: #fff;width: 100%;border-radius: 5px;padding: 5px;font-size: 14px;">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-resource-show form-deployment form-pod" style="height: 2px; background: #363636; margin: 10px 0;">
+
+                </div>
+                <div class="form-row form-resource-show form-deployment form-pod">
+                    <div class="add-label-btn" style="width: 100%;" onclick="addContainer()"><i class="fa-solid fa-plus"></i> Add Container</div>
+                    
+                </div>
+                <div id="container-list" class="form-row form-resource-show form-deployment form-pod" style="flex-direction: column;">
+                    
+                    
+                </div>
+
+                <div class="form-row form-resource-show form-deployment form-pod">
+                    <div class="add-label-btn" style="width: 100%;" onclick="addVolume()"><i class="fa-solid fa-plus"></i> Add Volume</div>
+                    
+                </div>
+                <div id="volume-list" class="form-row form-resource-show form-deployment form-pod" style="flex-direction: column;">
+                    
+                </div>
+                <div class="form-resource-show form-deployment form-pod" style="height: 2px; background: #363636; margin: 10px 0;">
+
+                </div>
+
+                <div class="form-row">
+                    <div class="insert-title">Service Name: </div>
+                    <div class="insert-input-box"> 
+                        <input id="service-name" type="text" placeholder="Please enter service name (optional)">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="insert-title">Service Ports: </div>
+                    <div class="add-label-btn" style="width: 200px;" onclick="addServicePort()"> 
+                        Add Service Port
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="insert-title">Service Type: </div>
+                    <div> 
+                        <select id="service-type" style="outline: none; background:#1C1C1C;outline: 0;border: 0;color: #fff;width: 100%;border-radius: 5px;padding: 5px;font-size: 14px;">
+                            <option value="ClusterIP">ClusterIP</option>
+                            <option value="NodePort">NodePort</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="service-ports" class="form-row" style="flex-direction: column; width: 100%;">
+                    
+                </div>
+                <div class="form-row form-resource-show form-service">
+                    <div class="insert-title">Select cluser: </div>
+                    <div> 
+                        <select id="select-cluster" style="outline: none; background:#1C1C1C;outline: 0;border: 0;color: #fff;width: 100%;border-radius: 5px;padding: 5px;font-size: 14px;" onchange="onSelectClusterChanged()">
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row form-resource-show form-service">
+                    <div class="insert-title">Select Pod: </div>
+                    <div> 
+                        <select id="select-pod" style="outline: none; background:#1C1C1C;outline: 0;border: 0;color: #fff;width: 100%;border-radius: 5px;padding: 5px;font-size: 14px;">
+                        </select>
+                    </div>
+                </div>
+
+                <div style="height: 2px; background: #363636; margin: 10px 0;">
+
+                </div>
+
+                <div class="modal-buttons">
+                    <div class="ok-button form-resource-show form-deployment" onclick="okModal('deployment')">
+                        Ok
+                    </div>
+                    <div class="ok-button form-resource-show form-pod" onclick="okModal('pod')">
+                        Ok
+                    </div>
+                    <div class="ok-button form-resource-show form-service" onclick="okModal('service')">
+                        Ok
+                    </div>
+                    <div class="close-button" onclick="closeModal()">
+                        Close
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="drag-clusters" class="drag-clusters-overlay" style="display: none;">
+        <div class="drag-clusters-content" style="
+                padding: 20px; 
+                height: auto;
+                border-radius: 5px; 
+                background: #151515; 
+                box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.25);
+                width: 60%; min-width: 700px; min-height: 450px;
+                display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div id="levels" class="levels" style="display: flex; flex-direction: row; align-items: center; justify-content: center;
+            width: 100%; height: 300px; gap: 30px;">
+                <div class="level_parent">
+                    <div class="level_item" style="width: 100%; height: 100%;"></div>
+                    <div class="ok-button" style="bottom: 10px; margin-bottom: 0; background: #D30F0F;" onclick="remove_Level(this)">Remove</div>
+                </div>
+            </div>
+            <div style="align-items: center; display: flex; justify-content: center; margin-top: 20px; width: 100%;">
+                <div id="list-clusters" class="list-clusters" style="display: flex; flex-direction: row; align-items: center; justify-content: center;
+                min-height: 30px;width: 100%; min-width: 300px; background: #414141;">
+                </div>
+            </div>
+            <div style="height: 2px; background: #363636; margin: 10px 0;">
+
+            </div>
+            <div class="modal-buttons" style="align-items: left; justify-content: left; margin-top: 0px;">
+                <div class="ok-button" style="width: 200px;" onclick="add_Level()">
+                    Add Level
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <div class="ok-button" onclick="okLevel()">
+                    Ok
+                </div>
+                <div class="close-button" onclick="closeLevel()">
+                    Close
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="static/js/drag_clusters.js"></script>
+
+</body>
+</html> 

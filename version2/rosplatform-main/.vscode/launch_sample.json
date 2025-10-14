@@ -1,0 +1,28 @@
+{
+    "configurations": [
+        
+        {
+            "name": "Web Server",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "args": [
+                "app.main:app",
+                "--reload",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8000"
+            ],
+            "env": {"MONGODB_URL": "mongodb://172.16.11.151:32000", "MONGODB_USER": "etri", "MONGODB_PASSWORD": "etri1234"},
+            "jinja": true
+        },
+        {
+            "name": "Launch Chrome",
+            "request": "launch",
+            "type": "chrome",
+            "url": "https://dev.gedge.dev/",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}
